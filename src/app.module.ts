@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConversationsModule } from './conversations/conversations.module';
 import { ParticipantsModule } from './participants/participants.module';
+import { MessagesModule } from './messages/messages.module';
 import entities from './utils/typeorm';
 
 @Module({
@@ -23,9 +24,11 @@ import entities from './utils/typeorm';
 			database: process.env.MYSQL_DB_NAME,
 			synchronize: true,
 			entities,
+			logging: true,
 		}),
 		ConversationsModule,
 		ParticipantsModule,
+		MessagesModule,
 	],
 	controllers: [],
 	providers: [],

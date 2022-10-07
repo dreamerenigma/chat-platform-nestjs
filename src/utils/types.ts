@@ -31,8 +31,14 @@ export type FindParticipantParams = Partial<{
 }>;
 export interface AuthenticatedRequst extends Request {
 	user: User;
-}
+};
 
 export type CreateParticipantParams = {
 	id: number;
-}
+};
+
+export type CreateMessageParams = {
+	content: string;
+	conversationId: number;
+	user: User;
+};

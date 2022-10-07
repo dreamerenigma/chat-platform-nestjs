@@ -10,7 +10,7 @@ import { IConversationsService } from './conversations';
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
-	[x: string]: any;
+	participants: any;
 	constructor(
 		@InjectRepository(Conversation) 
 		private readonly conversationRepository: Repository<Conversation>,
@@ -19,14 +19,25 @@ export class ConversationsService implements IConversationsService {
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
 	) {}
-	
+
+	async find(id: number) {
+		return this.participantsService.findParticipantConversations(id);
+	}
+
+	async findConversationById(id: number): Promise<Conversation> {
+		return this.conversationRepository.findOne(id, { relations: ['participants', 'participants.user']});
+	}
+
 	async createConversation(user: User, params: CreateConversationParams) {
 		const userDB = await this.userService.findUser({ id: user.id });
 		const { authorId, recipientId } = params;
 		const participants: Participant[] = [];
 		if(!userDB.participant) {
-			const participant = await this.createParticipantAndSaveUser(userDB, authorId);
-			this.participants.push(participant);
+			const participant = await this.createParticipantAndSaveUser(
+				userDB, 
+				authorId,
+			);
+			return this.participants.push(participant);
 		} else participants.push(userDB.participant);
 			
 		const recipient = await this.userService.findUser({ id: recipientId });
@@ -34,8 +45,11 @@ export class ConversationsService implements IConversationsService {
 			throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
 
 		if (!recipient.participant) {
-			const participant = await this.createParticipantAndSaveUser( recipient, recipientId );
-			this.participants.push(participant);
+			const participant = await this.createParticipantAndSaveUser(
+				recipient,
+				recipientId,
+			);
+			return this.participants.push(participant);
 		} else participants.push(recipient.participant);
 		
 		const conversation = this.conversationRepository.create({ participants });
