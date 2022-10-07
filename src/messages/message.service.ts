@@ -14,7 +14,11 @@ export class MessageService implements IMessageService {
 		@InjectRepository(Conversation) 
 		private readonly conversationRepository: Repository<Conversation>,
 	) {}
-	async createMessage({ user, content, conversationId, }: CreateMessageParams): Promise<Message> {
+		async createMessage({ 
+			user,
+			content,
+			conversationId,
+		}: CreateMessageParams): Promise<Message> {
 		const conversation = await this.conversationRepository.findOne({ 
 			where: { id: conversationId },
 			relations: ['creator', 'recipient'],
@@ -24,13 +28,14 @@ export class MessageService implements IMessageService {
 		const { creator, recipient	} = conversation;
 		if (creator.id !== user.id && recipient.id !== user.id)
 			throw new HttpException('Cannot Create Message', HttpStatus.FORBIDDEN);
-		conversation.creator = instanceToPlain(conversation.creator) as User;
-		conversation.recipient = instanceToPlain(conversation.recipient) as User;
 		const newMessage = this.messageRepository.create({
 			content,
 			conversation,
-			author: user,
+			author: instanceToPlain(user),
 		});
-		return this.messageRepository.save(newMessage);
+		const savedMessage = await this.messageRepository.save(newMessage);
+		conversation.lastMessageSent = savedMessage;
+		await this.conversationRepository.save(conversation);
+		return;
 	}
 }
