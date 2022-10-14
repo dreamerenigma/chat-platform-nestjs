@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
-import { CreateConversationDto } from 'src/auth/dtos/CreateConversation.dto';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decoratiors';
-import { Participant, User } from 'src/utils/typeorm';
+import { User } from 'src/utils/typeorm';
 import { IConversationsService } from './conversations';
+import { CreateConversationDto } from 'src/auth/dtos/CreateConversation.dto';
 
 @Controller(Routes.CONVERSATIONS)
 @UseGuards(AuthenticatedGuard)
@@ -22,14 +22,8 @@ export class ConversationsController {
 	}
 
 	@Get()
-	async getConversations(@AuthUser() user: User) {
-		const { id } = user.participant;
-		const participant = await this.conversationsService.find(user.participant.id);
-		// return participant.conversations.map((conversations) => ({
-		// 	...conversations,
-		// 		recipient: conversations.participants.filter((p) => p.id !== user.id),
-		// 	}));
-		return participant;
+	async getConversations(@AuthUser() { id }: User) {
+		return this.conversationsService.getConversations(id);
 	}
 
 	@Get(':id')
