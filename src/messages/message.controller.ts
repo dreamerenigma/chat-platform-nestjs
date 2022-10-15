@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decoratiors';
 import { User } from 'src/utils/typeorm';
@@ -9,13 +10,17 @@ import { IMessageService } from './message';
 export class MessageController {
 	constructor(
 		@Inject(Services.MESSAGES) private readonly messageService: IMessageService) {}
+		private eventEmitter: EventEmitter2
 			
 		@Post()	
-		createMessage(
+		async createMessage(
 			@AuthUser() user: User,
 			@Body() createMessageDto: CreateMessageDto,
-		) {
-		return this.messageService.createMessage({...createMessageDto, user });
+		)	{
+			const msg = await this.messageService.createMessage({...createMessageDto, user });
+			
+			this.eventEmitter.emit('message.create', msg);
+			return;
 			}
 
 		@Get(':conversationId')
