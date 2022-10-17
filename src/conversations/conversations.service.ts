@@ -9,7 +9,6 @@ import { IConversationsService } from './conversations';
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
-	participants: any;
 	constructor(
 		@InjectRepository(Conversation) 
 		private readonly conversationRepository: Repository<Conversation>,
@@ -17,10 +16,23 @@ export class ConversationsService implements IConversationsService {
 		private readonly userService: IUserService,
 	) {}
 
-	async find(id: number) {
-			'recipient.firstName',
-			'recipient.lastName',
-			'recipient.email',
+	async getConversations(id: number): Promise<Conversation[]> {
+		return this.conversationRepository
+			.createQueryBuilder('conversation')
+			.leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
+			.leftJoinAndSelect('conversation.creator', 'creator')
+			.addSelect([
+				'creator.id',
+				'creator.firstName',
+            'creator.lastName',
+				'creator.email',
+			])
+			.leftJoinAndSelect('conversation.recipient', 'recipient')
+			.addSelect([
+				'recipient.id',
+				'recipient.firstName',
+				'recipient.lastName',
+				'recipient.email',
 		])
 		.where('creator.id = :id', { id })
 		.orWhere('recipient.id = :id', { id })
