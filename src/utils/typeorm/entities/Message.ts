@@ -18,4 +18,5 @@ export class Message {
 
 	@ManyToOne(() => Conversation, (conversation) => conversation.messages)
 	conversation: Conversation;
+	lastMessageSent: Conversation;
 }
