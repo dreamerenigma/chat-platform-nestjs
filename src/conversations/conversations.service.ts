@@ -45,9 +45,15 @@ export class ConversationsService implements IConversationsService {
 	}
 
 	async createConversation(user: User, params: CreateConversationParams) {
-		const { recipientId } = params
+		const { email } = params
 
-		if(user.id === params.recipientId) {
+		const recipient = await this.userService.findUser({ email });
+
+			
+		if (!recipient) 
+			throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
+
+		if(user.id === recipient.id) {
 			throw new HttpException(
 				'Cannot create conversation',
 				HttpStatus.BAD_REQUEST,
@@ -56,10 +62,10 @@ export class ConversationsService implements IConversationsService {
 				where: [
 					{
 						creator: { id: user.id },
-						recipient: { id: recipientId },
+						recipient: { id: recipient.id },
 					},
 					{
-						creator: { id: recipientId },
+						creator: { id: recipient.id },
 						recipient: { id: user.id },
 					},
 				],
@@ -67,10 +73,6 @@ export class ConversationsService implements IConversationsService {
 		
 			if (existingConversation)
 				throw new HttpException('Recipient Not Found', HttpStatus.CONFLICT);
-			const recipient = await this.userService.findUser({ id: recipientId });
-			
-			if (!recipient) 
-				throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
 			
 			const conversation = this.conversationRepository.create({ 
 				creator: user,
