@@ -56,7 +56,9 @@ export class MessageService implements IMessageService {
 			.where('id = !conversationId', { conversationId: params.conversationId})
 			.leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
 			.leftJoinAndSelect('conversation.messages', 'message')
-			.where('conversation.id = message.conversationId')
+			.where('conversation.id = :conversationId', {
+				conversationId: params.conversationId,
+			})
 			.orderBy('message.createAt', 'DESC')
 			.limit(5)
 			.getOne();
@@ -85,7 +87,7 @@ export class MessageService implements IMessageService {
 				{ id: params.conversationId },
 				{ lastMessageSent: null },
 			);
-			await this.messageRepository.delete({ id: message.id });
+			return this.messageRepository.delete({ id: message.id });
 		} else {
 			console.log('There are more than 1 message');
 			const newLastMessage = conversation.messages[SECOND_MESSAGE_INDEX];
@@ -93,7 +95,7 @@ export class MessageService implements IMessageService {
 				{ id: params.conversationId },
 				{ lastMessageSent: null },
 			);
-			await this.messageRepository.delete({ id: message.id });
+			return this.messageRepository.delete({ id: message.id });
 		}
 	}
 }
