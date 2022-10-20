@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Inject, Param, ParseIntPipe, Post } from '@nestjs/common';
+import { 
+	Body, 
+	Controller, 
+	Delete, 
+	Get, 
+	Inject, 
+	Param, 
+	ParseIntPipe, 
+	Post
+} from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decoratiors';
@@ -16,24 +25,35 @@ export class MessageController {
 		@Post()
 		async createMessage(
 			@AuthUser() user: User,
-			@Body() createMessageDto: CreateMessageDto,
+			@Body() {content }: CreateMessageDto,
+			@Param('id', ParseIntPipe) conversationId: number,
 		)	{
-			const response = await this.messageService.createMessage({
-				...createMessageDto,
-				user 
-			});
+			const params = {user, conversationId, content };
+			const response = await this.messageService.createMessage(params);
 			this.eventEmitter.emit('message.create', response);
 			return;
 		}
 
-		@Get(':conversationId')
+		@Get()
 		async getMessagesFromConversation(
 			@AuthUser() user: User,
-			@Param('conversationId', ParseIntPipe) conversationId: number,
-	) {
-		const messages = await this.messageService.getMessagesByConversationId(
-			conversationId,
-		);
-		return { id: conversationId, messages };
-	}
+			@Param('id', ParseIntPipe) id: number,
+		) {
+			console.log(id);
+			const messages = await this.messageService.getMessagesByConversationId(id);
+			return { id, messages };
+		}
+
+		@Delete(':messageId')
+		async deleteMessageFromnConversation(
+			@AuthUser() user: User,
+			@Param('id', ParseIntPipe) conversationId: number,
+			@Param('messageId', ParseIntPipe) messageId: number,
+		) {
+			await this.messageService.deleteMessage({
+				userId: user.id,
+				conversationId,
+				messageId,
+			});
+		}
 }
