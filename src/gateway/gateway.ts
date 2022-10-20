@@ -1,8 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { 
+	ConnectedSocket,
 	MessageBody, 
 	OnGatewayConnection, 
+	OnGatewayInit, 
 	SubscribeMessage, 
 	WebSocketGateway, 
 	WebSocketServer 
@@ -10,7 +12,7 @@ import {
 import { Socket, Server } from 'socket.io';
 import { Services } from 'src/utils/constants';
 import { AuthenticatedSocket } from 'src/utils/interfaces';
-import { Message } from 'src/utils/typeorm';
+import { Conversation, Message } from 'src/utils/typeorm';
 import { CreateMessageResponse } from 'src/utils/types';
 import { IGatewaySessionManager } from './gateway.session';
 
@@ -21,13 +23,14 @@ import { IGatewaySessionManager } from './gateway.session';
 	},
 })
 export class MessagingGateway implements OnGatewayConnection {
-
 	constructor(
 		@Inject(Services.GATEWAY_SESSION_MANAGER) 
 		private readonly sessions: IGatewaySessionManager,
 	) {}
+
 	@WebSocketServer()
 	server: Server;
+
 	handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
 		console.log('New Incoming Connection');
 		console.log(socket.user);
@@ -38,6 +41,16 @@ export class MessagingGateway implements OnGatewayConnection {
 	@SubscribeMessage('createMessage')
 	handleCreateMessage(@MessageBody() data: any) {
 		console.log('Create Message');
+	}
+
+	@SubscribeMessage('onClientConnect')
+	onClientConnect(
+		@MessageBody() data: any,
+		@ConnectedSocket() client: AuthenticatedSocket,
+	) {
+		console.log('onClientConnect');
+		console.log(data);
+		console.log(client.user);
 	}
 
 	@OnEvent('message.create')
@@ -55,5 +68,13 @@ export class MessagingGateway implements OnGatewayConnection {
 
 		if (authorSocket) authorSocket.emit('onMessage', payload);
 		if (recipientSocket) recipientSocket.emit('onMessage', payload);
+	}
+
+	@OnEvent('conversation.create')
+	handleConversationCreateEvent(payload: Conversation) {
+		console.log('Inside conversation.create');
+		console.log(payload.recipient);
+		const recipientSocket = this.sessions.getUserSocket(payload.recipient.id);
+		if (recipientSocket) recipientSocket.emit('onConversation', payload);
 	}
 }

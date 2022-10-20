@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
@@ -25,12 +25,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 			database: process.env.MYSQL_DB_NAME,
 			synchronize: true,
 			entities,
-			logging: true,
 		}),
 		ConversationsModule,
 		MessagesModule,
 		GatewayModule,
-		EventEmitterModule.forRoot()
+		EventEmitterModule.forRoot(),
 	],
 	controllers: [],
 	providers: [],
