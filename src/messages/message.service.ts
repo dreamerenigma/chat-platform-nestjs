@@ -104,7 +104,12 @@ export class MessageService implements IMessageService {
 			where: {
 				id: params.messageId,
 				author: { id: params.userId },
-			}, relations: ['conversation', 'author'],
+			}, relations: [
+				'conversation', 
+				'conversation.creator', 
+				'conversation.recipient',
+				'author', 
+			],
 		});
 		if (!messageDB) 
 			throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);

@@ -115,6 +115,8 @@ export class MessagingGateway implements OnGatewayConnection {
 
 	@OnEvent('message.delete')
 	async handleMessageDelete(payload) {
+		console.log('Inside message.delete');
+		console.log(payload);
 		const conversation = await this.conversationService.findConversationById(
 			payload.conversationId,
 		);
@@ -124,5 +126,19 @@ export class MessagingGateway implements OnGatewayConnection {
 			? this.sessions.getUserSocket(recipient.id)
 			: this.sessions.getUserSocket(creator.id);
 		if (recipientSocket) recipientSocket.emit('onMessageDelete', payload);
+	}
+
+	@OnEvent('message.update')
+	async handleMessageUpdate(message: Message) {
+		const {
+			author,
+			conversation: { creator, recipient },
+		} = message;
+		console.log(message);
+		const recipientSocket = 
+			author.id === creator.id
+				? this.sessions.getUserSocket(recipient.id)
+				: this.sessions.getUserSocket(creator.id);
+		if (recipientSocket) recipientSocket.emit('onMessageUpdate', message);
 	}
 }

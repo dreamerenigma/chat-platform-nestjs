@@ -39,5 +39,5 @@ export class Conversation {
 	lastMessageSent: Message;
 
 	@UpdateDateColumn({ name: 'updated_at' })
-		lastMessageSentAt: number;
+	lastMessageSentAt: Date;
 }

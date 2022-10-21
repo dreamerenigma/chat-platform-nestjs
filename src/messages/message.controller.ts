@@ -74,6 +74,7 @@ export class MessageController { constructor(
 	) {
 		const params = { userId, content, conversationId, messageId };
 		const message = await this.messageService.editMessage(params);
+		this.eventEmitter.emit('message.update', message);
 		return message;
 	}
 }
