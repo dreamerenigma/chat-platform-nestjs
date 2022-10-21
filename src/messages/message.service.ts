@@ -101,8 +101,10 @@ export class MessageService implements IMessageService {
 
 	async editMessage(params: EditMessageParams) {
 		const messageDB = await this.messageRepository.findOne({
-			id: params.messageId,
-			author: { id: params.userId },
+			where: {
+				id: params.messageId,
+				author: { id: params.userId },
+			}, relations: ['conversation', 'author'],
 		});
 		if (!messageDB) 
 			throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);
