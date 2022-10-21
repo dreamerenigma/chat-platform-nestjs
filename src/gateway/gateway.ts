@@ -35,10 +35,8 @@ export class MessagingGateway implements OnGatewayConnection {
 	server: Server;
 
 	handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
-		console.log('New Incoming Connection');
-		console.log(socket.user);
 		this.sessions.setUserSocket(socket.user.id, socket);
-		socket.emit('connected', { status: 'good' });
+		socket.emit('connected', {});
 	}
 
 	@SubscribeMessage('createMessage')
@@ -46,14 +44,48 @@ export class MessagingGateway implements OnGatewayConnection {
 		console.log('Create Message');
 	}
 
-	@SubscribeMessage('onClientConnect')
-	onClientConnect(
+	@SubscribeMessage('onConversationJoin')
+	onConversationJoin(
 		@MessageBody() data: any,
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
-		console.log('onClientConnect');
-		console.log(data);
-		console.log(client.user);
+		console.log('onConversationJoin');
+		client.join(data.conversationId)
+		console.log(client.rooms);
+		client.to(data.conversationId).emit('userJoin');
+	}
+
+	@SubscribeMessage('onConversationLeave')
+	onConversationLeave(
+		@MessageBody() data: any,
+		@ConnectedSocket() client: AuthenticatedSocket,
+	) {
+		console.log('onConversationLeave');
+		client.join(data.conversationId)
+		console.log(client.rooms);
+		client.to(data.conversationId).emit('userLeave');
+	}
+	
+	@SubscribeMessage('onTypingStart')
+	onTypingStart(
+		@MessageBody() data: any,
+		@ConnectedSocket() client: AuthenticatedSocket,
+	) {
+		console.log('onTypingStart');
+		client.join(data.conversationId)
+		console.log(client.rooms);
+		client.to(data.conversationId).emit('onTypingStart');
+	}
+
+	@SubscribeMessage('onTypingStop')
+	onTypingStop(
+		@MessageBody() data: any,
+		@ConnectedSocket() client: AuthenticatedSocket,
+	) {
+		console.log('onTypingStop');
+		client.join(data.conversationId)
+		console.log(client.rooms);
+		client.to(data.conversationId).emit('onTypingStop');
 	}
 
 	@OnEvent('message.create')
