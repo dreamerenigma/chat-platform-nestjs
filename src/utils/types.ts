@@ -27,6 +27,7 @@ export type ConversationIdentityType = 'author' | 'recipient';
 export type FindParticipantParams = Partial<{
 	id: number;
 }>;
+
 export interface AuthenticatedRequest extends Request {
 	user: User;
 };
@@ -50,4 +51,11 @@ export type DeleteMessageParams = {
 	userId: number;
 	conversationId: number;
 	messageId: number;
+};
+
+export type EditMessageParams = {
+	conversationId: number;
+	messageId: number;
+	userId: number;
+	content: string;
 };
