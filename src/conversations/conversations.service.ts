@@ -40,7 +40,7 @@ export class ConversationsService implements IConversationsService {
 		.getMany();
 	}
 
-	async findById(id: number): Promise<Conversation> {
+	async findConversationById(id: number): Promise<Conversation> {
 		return this.conversationRepository.findOne({ 
 			where: { id },
 			relations: ['lastMessageSent', 'creator', 'recipient'],

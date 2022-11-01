@@ -6,7 +6,7 @@ import {
 	PrimaryGeneratedColumn 
 } from "typeorm";
 import { Conversation } from "./Conversation";
-import { GroupConversation } from './GroupConversation';
+import { Group } from './Group';
 import { User } from "./User";
 
 @Entity({ name: 'messages'})
@@ -27,6 +27,6 @@ export class Message {
 	conversation: Conversation;
 	lastMessageSent: Conversation;
 
-	@ManyToOne(() => GroupConversation, (group) => group.messages)
-	group?: GroupConversation;
+	@ManyToOne(() => Group, (group) => group.messages)
+	group?: Group;
 }

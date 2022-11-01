@@ -9,7 +9,7 @@ import {
 	PrimaryGeneratedColumn 
 } from 'typeorm';
 import { Conversation } from './Conversation';
-import { GroupConversation } from './GroupConversation';
+import { Group } from './Group';
 import { Message } from './Message';
 
 @Entity({ name: 'users' })
@@ -34,6 +34,6 @@ export class User {
 	@JoinColumn()
 	messages: Message[];
 
-	@ManyToMany(() => GroupConversation, (group) => group.users)
-	groups: GroupConversation[];
+	@ManyToMany(() => Group, (group) => group.users)
+	groups: Group[];
 }
