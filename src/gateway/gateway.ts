@@ -117,7 +117,7 @@ export class MessagingGateway implements OnGatewayConnection {
 	async handleMessageDelete(payload) {
 		console.log('Inside message.delete');
 		console.log(payload);
-		const conversation = await this.conversationService.findConversationById(
+		const conversation = await this.conversationService.findById(
 			payload.conversationId,
 		);
 		if (!conversation) return;

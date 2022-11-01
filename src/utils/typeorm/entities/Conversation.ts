@@ -1,12 +1,15 @@
+import { ConversationType } from "src/utils/types";
 import { 
+	Column,
 	CreateDateColumn,
 	Entity, 
 	Index, 
 	JoinColumn,
+	ManyToMany,
 	OneToMany,
 	OneToOne, 
 	PrimaryGeneratedColumn, 
-	UpdateDateColumn
+	UpdateDateColumn,
 } from "typeorm";
 import { Message } from "./Message";
 import { User } from "./User";
@@ -17,13 +20,16 @@ export class Conversation {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(() => User, { createForeignKeyConstraints: false })
+	@OneToOne(() => User, { createForeignKeyConstraints: false, nullable: true })
 	@JoinColumn()
 	creator: User;
 
-	@OneToOne(() => User, { createForeignKeyConstraints: false })
+	@OneToOne(() => User, { createForeignKeyConstraints: false, nullable: true })
 	@JoinColumn()
    recipient: User;
+
+	@ManyToMany(() => User, (user) => user.conversations)
+	users: User[];
 
 	@OneToMany(() => Message, (message) => message.conversation, { 
 		cascade: ['insert', 'remove', 'update'], 
@@ -40,4 +46,7 @@ export class Conversation {
 
 	@UpdateDateColumn({ name: 'updated_at' })
 	lastMessageSentAt: Date;
+
+	@Column()
+	type: ConversationType;
 }

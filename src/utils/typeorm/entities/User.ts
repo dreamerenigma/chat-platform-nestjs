@@ -1,5 +1,14 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { 
+	Column, 
+	Entity, 
+	JoinColumn, 
+	JoinTable, 
+	ManyToMany, 
+	OneToMany, 
+	PrimaryGeneratedColumn 
+} from 'typeorm';
+import { Conversation } from './Conversation';
 import { Message } from './Message';
 
 @Entity({ name: 'users' })
@@ -23,4 +32,9 @@ export class User {
 	@OneToMany(() => Message, (message) => message.author)
 	@JoinColumn()
 	messages: Message[];
+
+	@ManyToMany(() => Conversation, (conversation) => 
+	conversation.users)
+	@JoinTable()
+	conversations: Conversation[];
 }

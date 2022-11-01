@@ -7,5 +7,5 @@ export interface IConversationsService {
 		conversationParams: CreateConversationParams
 	): Promise<Conversation>;
 	getConversations(id: number): Promise<Conversation[]>;
-	findConversationById(id: number): Promise<Conversation>;
+	findById(id: number): Promise<Conversation>;
 }

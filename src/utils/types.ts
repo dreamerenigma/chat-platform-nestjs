@@ -15,6 +15,11 @@ export type ValidateUserDetails = {
 export type FindUserParams = Partial<{
 	id: number;
 	email: string;
+	username: string;
+}>;
+
+export type FindUserOptions = Partial<{
+	selectAll: boolean;
 }>;
 
 export type CreateConversationParams = {
@@ -59,3 +64,5 @@ export type EditMessageParams = {
 	userId: number;
 	content: string;
 };
+
+export type ConversationType = 'group' | 'private';

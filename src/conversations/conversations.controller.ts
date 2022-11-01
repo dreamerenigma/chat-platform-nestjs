@@ -15,18 +15,19 @@ export class ConversationsController {
 		private readonly conversationsService: IConversationsService,
 		private readonly events: EventEmitter2,
 	) {}
+	@Get('test/endpoint/check')test() {return}
 
 	@Post()
 	async createConversation(
 		@AuthUser() user: User,
-		@Body() createConversationPayload: CreateConversationDto
+		@Body() createConversationPayload: CreateConversationDto,
 	) {
 		console.log('createConversation');
-		const conversation = this.conversationsService.createConversation(
+		const conversation = await this.conversationsService.createConversation(
 			user, 
 			createConversationPayload,
 		);
-		this.events.emit('conversation.create', conversation);
+		// this.events.emit('conversation.create', conversation);
 		return conversation; 
 	}
 
@@ -37,9 +38,6 @@ export class ConversationsController {
 
 	@Get(':id')
 	async getConversationById(@Param('id') id: number) {
-		const conversation = await this.conversationsService.findConversationById(id);
-		return conversation;
+		return this.conversationsService.findById(id);
 	}
-
-	// @Delete(':converssationId/messages/:messageId')
 }
