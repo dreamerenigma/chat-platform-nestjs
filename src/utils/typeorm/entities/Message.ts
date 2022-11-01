@@ -1,5 +1,12 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { 
+	Column, 
+	CreateDateColumn, 
+	Entity, 
+	ManyToOne, 
+	PrimaryGeneratedColumn 
+} from "typeorm";
 import { Conversation } from "./Conversation";
+import { GroupConversation } from './GroupConversation';
 import { User } from "./User";
 
 @Entity({ name: 'messages'})
@@ -19,4 +26,7 @@ export class Message {
 	@ManyToOne(() => Conversation, (conversation) => conversation.messages)
 	conversation: Conversation;
 	lastMessageSent: Conversation;
+
+	@ManyToOne(() => GroupConversation, (group) => group.messages)
+	group?: GroupConversation;
 }

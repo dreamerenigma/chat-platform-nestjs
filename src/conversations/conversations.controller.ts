@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Inject, Param, Post, UseGuards } from '@nestjs/common';
+import { 
+	Body, 
+	Controller, 
+	Delete, 
+	Get, 
+	Inject, 
+	Param, 
+	Post, 
+	UseGuards 
+} from '@nestjs/common';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decoratiors';
@@ -27,7 +36,7 @@ export class ConversationsController {
 			user, 
 			createConversationPayload,
 		);
-		// this.events.emit('conversation.create', conversation);
+		this.events.emit('conversation.create', conversation);
 		return conversation; 
 	}
 
@@ -38,6 +47,9 @@ export class ConversationsController {
 
 	@Get(':id')
 	async getConversationById(@Param('id') id: number) {
-		return this.conversationsService.findById(id);
+		const conversation = await this.conversationsService.findConversationById(id);
+		return conversation;
 	}
+
+	// @Delete(':conversationId/messages/:messageId')
 }

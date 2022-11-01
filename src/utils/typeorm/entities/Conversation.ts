@@ -28,9 +28,6 @@ export class Conversation {
 	@JoinColumn()
    recipient: User;
 
-	@ManyToMany(() => User, (user) => user.conversations)
-	users: User[];
-
 	@OneToMany(() => Message, (message) => message.conversation, { 
 		cascade: ['insert', 'remove', 'update'], 
 	})
@@ -46,7 +43,4 @@ export class Conversation {
 
 	@UpdateDateColumn({ name: 'updated_at' })
 	lastMessageSentAt: Date;
-
-	@Column()
-	type: ConversationType;
 }
