@@ -65,4 +65,12 @@ export type EditMessageParams = {
 	content: string;
 };
 
-export type ConversationType = 'group' | 'private';
+export type CreateGroupParams = {
+	creator: User;
+	title?: string;
+	users: string[];
+};
+
+export type FetchGroupsParams = {
+	userId: number;
+};

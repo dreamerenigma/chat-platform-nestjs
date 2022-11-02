@@ -1,4 +1,3 @@
-import { ConversationType } from "src/utils/types";
 import { 
 	Column,
 	CreateDateColumn,

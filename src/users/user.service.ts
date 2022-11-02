@@ -23,21 +23,8 @@ export class UserService implements IUserService {
 		return this.userRepository.save(newUser);
 	}
 
-	async findUser(
-		params: FindUserParams,
-		options?: FindUserOptions,
-	): Promise<User> {
-		const selections: (keyof User)[] = [
-			'email',
-			'firstName',
-			'lastName',
-			'id',
-		];
-		const selectionsWithPassword: (keyof User)[] = [...selections, 'password'];
-		return this.userRepository.findOne(params, {
-			select: options?.selectAll ? selectionsWithPassword : selections,
-			relations: ['profile', 'presence', 'peer'],
-		});
+	async findUser(findUserParams: FindUserParams): Promise<User> {
+		return this.userRepository.findOne(findUserParams);
 	}
 
 	async saveUser(user: User) {
