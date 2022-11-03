@@ -19,11 +19,11 @@ export class Conversation {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@OneToOne(() => User, { createForeignKeyConstraints: false, nullable: true })
+	@OneToOne(() => User, { createForeignKeyConstraints: false })
 	@JoinColumn()
 	creator: User;
 
-	@OneToOne(() => User, { createForeignKeyConstraints: false, nullable: true })
+	@OneToOne(() => User, { createForeignKeyConstraints: false })
 	@JoinColumn()
    recipient: User;
 

@@ -26,10 +26,10 @@ export class MessageController { constructor(
 	@Post()
 	async createMessage(
 		@AuthUser() user: User,
-		@Body() {content }: CreateMessageDto,
+		@Body() { content }: CreateMessageDto,
 		@Param('id', ParseIntPipe) conversationId: number,
 	)	{
-		const params = {user, conversationId, content };
+		const params = { user, conversationId, content };
 		const response = await this.messageService.createMessage(params);
 		this.eventEmitter.emit('message.create', response);
 		return;
