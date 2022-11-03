@@ -6,6 +6,7 @@ import {
 	ParseIntPipe, 
 	Post 
 } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 import { CreateMessageDto } from "src/messages/dtos/CreateMessage.dto";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
@@ -17,19 +18,22 @@ export class GroupMessageController {
 	constructor(
 		@Inject(Services.GROUP_MESSAGES) 
 		private readonly groupMessageService: IGroupMessageService,
+		private readonly eventEmitter: EventEmitter2,
 	) {}
 
-	@Post(':id/messages')
+	@Post()
 	async createGroupMessage(
 		@AuthUser() user: User, 
 		@Param('id', ParseIntPipe) id: number,
 		@Body() { content }: CreateMessageDto,
 	) {
 		console.log(`Creating Group Message for ${id}`);
-		await this.groupMessageService.createGroupMessage({ 
+		const response = await this.groupMessageService.createGroupMessage({ 
 			author: user, 
 			groupId: id, 
 			content,
 		});
+		this.eventEmitter.emit('group.message.create', response);
+		return;
 	}
 }

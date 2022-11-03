@@ -25,10 +25,9 @@ export class GroupMessageService implements IGroupMessageService {
 		const group = await this.groupService.findGroupById(id);
 		if (!group)
 			throw new HttpException('No Group Found', HttpStatus.BAD_REQUEST);
-		const findUser = group.users.find((u) => u.id === params.author.id);
+		const findUser = group.users.find((u) => u.id === author.id);
 		if (!findUser)
 			throw new HttpException('User not in group', HttpStatus.BAD_REQUEST);
-		
 		const groupMessage = this.groupMessageRepository.create({ 
 			content,
 			group,
@@ -36,6 +35,7 @@ export class GroupMessageService implements IGroupMessageService {
 		});
 		const savedMessage = await this.groupMessageRepository.save(groupMessage);
 		group.lastMessageSent = savedMessage;
-		return this.groupService.saveGroup(group);
+		const updatedGroup = await this.groupService.saveGroup(group);
+		return { message: savedMessage, group: updatedGroup };
 	}
 }
