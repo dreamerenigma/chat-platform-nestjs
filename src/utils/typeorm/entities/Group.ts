@@ -5,11 +5,12 @@ import {
 	JoinColumn,
 	JoinTable,
 	ManyToMany,
-	OneToMany, 
+	OneToMany,
 	OneToOne, 
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from "typeorm";
+import { GroupMessage } from "./GroupMessage";
 import { Message } from "./Message";
 import { User } from "./User";
 
@@ -29,18 +30,18 @@ export class Group {
 	@JoinColumn()
 	creator: User;
 
-	@OneToMany(() => Message, (message) => message.group, {
+	@OneToMany(() => GroupMessage, (message) => message.group, {
 		cascade: ['insert', 'remove', 'update'],
 	})
 	@JoinColumn()
-	messages: Message[];
+	messages: GroupMessage[];
 
 	@CreateDateColumn({ name: 'created_at' })
 	createdAt: number;
 
-	@OneToOne(() => Message)
+	@OneToOne(() => GroupMessage)
 	@JoinColumn({ name: 'last_message_sent' })
-	lastMessageSent: Message;
+	lastMessageSent: GroupMessage;
 
 	@UpdateDateColumn({ name: 'updated_at' })
 	lastMessageSentAt: Date;

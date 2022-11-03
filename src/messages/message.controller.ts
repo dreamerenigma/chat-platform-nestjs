@@ -26,8 +26,8 @@ export class MessageController { constructor(
 	@Post()
 	async createMessage(
 		@AuthUser() user: User,
-		@Body() { content }: CreateMessageDto,
 		@Param('id', ParseIntPipe) conversationId: number,
+		@Body() { content }: CreateMessageDto,
 	)	{
 		const params = { user, conversationId, content };
 		const response = await this.messageService.createMessage(params);
@@ -40,6 +40,7 @@ export class MessageController { constructor(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) id: number,
 	) {
+		console.log(id);
 		const messages = await this.messageService.getMessagesByConversationId(id);
 		return { id, messages };
 	}

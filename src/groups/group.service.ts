@@ -1,5 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { group } from "console";
 import { IUserService } from "src/users/user";
 import { Services } from "src/utils/constants";
 import { Group } from "src/utils/typeorm";
@@ -36,10 +37,15 @@ export class GroupService implements IGroupService {
 			.getMany();
 	}
 
-	getGroupById(id: number): Promise<Group> {
+	findGroupById(id: number): Promise<Group> {
 		return this.groupRepository.findOne({ 
 			where: { id }, 
 			relations: ['creator', 'users', 'lastMessageSent'],
 		});
+	}
+
+	saveGroup(group: Group): Promise<Group>
+	{
+		return this.groupRepository.save(group);
 	}
 }

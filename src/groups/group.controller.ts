@@ -24,6 +24,6 @@ export class GroupController {
 
 	@Get(':id')
 	getgroups(@AuthUser() user: User, @Param('id') id: number) {
-		return this.groupService.getGroupById(id); 
+		return this.groupService.findGroupById(id); 
 	}
 }

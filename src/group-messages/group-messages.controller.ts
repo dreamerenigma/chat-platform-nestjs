@@ -1,4 +1,11 @@
-import { Body, Controller, Inject, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { 
+	Body, 
+	Controller, 
+	Inject, 
+	Param, 
+	ParseIntPipe, 
+	Post 
+} from "@nestjs/common";
 import { CreateMessageDto } from "src/messages/dtos/CreateMessage.dto";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
@@ -13,11 +20,16 @@ export class GroupMessageController {
 	) {}
 
 	@Post(':id/messages')
-	createGroupMessage(
+	async createGroupMessage(
 		@AuthUser() user: User, 
 		@Param('id', ParseIntPipe) id: number,
 		@Body() { content }: CreateMessageDto,
 	) {
 		console.log(`Creating Group Message for ${id}`);
+		await this.groupMessageService.createGroupMessage({ 
+			author: user, 
+			groupId: id, 
+			content,
+		});
 	}
 }
