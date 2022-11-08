@@ -23,11 +23,28 @@ export class UserService implements IUserService {
 		return this.userRepository.save(newUser);
 	}
 
-	async findUser(findUserParams: FindUserParams): Promise<User> {
-		return this.userRepository.findOne(findUserParams);
+	async findUser(
+		params: FindUserParams,
+		options?: FindUserOptions,
+	): Promise<User> {
+		const selections: (keyof User)[] = ['email', 'firstName', 'lastName', 'id'];
+		const selectionWithPassword: (keyof User)[] = [...selections, 'password'];
+		return this.userRepository.findOne(params, {
+			select: options?.selectAll ? selectionWithPassword : selections,
+		});
 	}
 
 	async saveUser(user: User) {
 		return this.userRepository.save(user);
+	}
+
+	searchUsers(query: string) {
+		const statement = '(user.email LIKE :query)';
+		return this.userRepository
+			.createQueryBuilder('user')
+			.where(statement, { query: `%${query}%` })
+			.limit(10)
+			.select(['user.firstName', 'user.lastName', 'user.email', 'user.id'])
+			.getMany();
 	}
 }
