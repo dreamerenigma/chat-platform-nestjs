@@ -3,5 +3,5 @@ import { CreateGroupMessageParams } from "src/utils/types";
 
 export interface IGroupMessageService {
 	createGroupMessage(params: CreateGroupMessageParams);
-	getGroupMessages(params: GetGroupMessagesParams);
+	getGroupMessages(id: number): Promise<GroupMessage[]>;
 }

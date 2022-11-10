@@ -4,6 +4,7 @@ import {
 	ConnectedSocket,
 	MessageBody, 
 	OnGatewayConnection, 
+	OnGatewayDisconnect, 
 	OnGatewayInit, 
 	SubscribeMessage, 
 	WebSocketGateway, 
@@ -35,9 +36,20 @@ export class MessagingGateway implements OnGatewayConnection {
 	server: Server;
 
 	handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
+		console.log('Incoming Connection');
+		console.log(socket.user);
 		this.sessions.setUserSocket(socket.user.id, socket);
 		socket.emit('connected', {});
 	}
+
+	// handleDisconnect(client: any) {
+	// 	console.log('Client Disconnect');
+	// }
+
+	// @SubscribeMessage('onConnect')
+	// handleOnConnect(@ConnectedSocket() client: AuthenticatedSocket) {
+	// 	this.sessions.setUserSocket
+	// }
 
 	@SubscribeMessage('createMessage')
 	handleCreateMessage(@MessageBody() data: any) {
@@ -49,7 +61,8 @@ export class MessagingGateway implements OnGatewayConnection {
 		@MessageBody() data: any,
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
-		console.log('onConversationJoin');
+		console.log(`${client.user?.id} joined a Conversation of ID: ${data.conversationId}`,
+		);
 		client.join(`conversation-${data.conversationId}`);
 		console.log(client.rooms);
 		client.to(data.conversationId).emit('userJoin');
@@ -89,20 +102,27 @@ export class MessagingGateway implements OnGatewayConnection {
 	}
 
 	@OnEvent('message.create')
-	handleMessageCreateEvent(payload: CreateMessageResponse) {
+	handleMessageCreateEvent(
+		@ConnectedSocket() client: AuthenticatedSocket,
+		payload: CreateMessageResponse
+	) {
 		console.log('Inside message.create');
-		const {
-			author, 
-			conversation: { creator, recipient },
-		} = payload.message;
+		console.log(payload);
+		const { author, conversation } = payload.message;
+		console.log(this.server.sockets.adapter.rooms);
+		this.server
+			.to(`conversation-${conversation.id}`)
+			.emit('onMessage', payload);
 
-		const authorSocket = this.sessions.getUserSocket(author.id);
-		const recipientSocket = author.id === creator.id 
-			? this.sessions.getUserSocket(recipient.id) 
-			: this.sessions.getUserSocket(creator.id);
+		// const authorSocket = this.sessions.getUserSocket(author.id);
+		// const recipientSocket = author.id === creator.id 
+		// 	? this.sessions.getUserSocket(recipient.id) 
+		// 	: this.sessions.getUserSocket(creator.id);
 
-		if (authorSocket) authorSocket.emit('onMessage', payload);
-		if (recipientSocket) recipientSocket.emit('onMessage', payload);
+		// if (authorSocket) authorSocket.emit('onMessage', payload);
+		// console.log(authorSocket);
+		// console.log(recipientSocket);
+		// if (recipientSocket) recipientSocket.emit('onMessage', payload);
 	}
 
 	@OnEvent('conversation.create')
@@ -143,5 +163,9 @@ export class MessagingGateway implements OnGatewayConnection {
 	}
 
 	@OnEvent('group.message.create')
-	async handleGroupMessageCreate(payload: CreateGroupMessageResponse) {}
+	async handleGroupMessageCreate(payload: CreateGroupMessageResponse) {
+		const { id } = payload.group;
+		console.log('Inside group.message.create');
+		this.server.to(`group-${id}`).emit('onGroupMessage', payload);
+	}
 }
