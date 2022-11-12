@@ -7,7 +7,7 @@ import {
 	Param, 
 	ParseIntPipe, 
 	Patch, 
-	Post
+	Post,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decoratiors';
@@ -28,7 +28,7 @@ export class MessageController { constructor(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) conversationId: number,
 		@Body() { content }: CreateMessageDto,
-	)	{
+	) {
 		const params = { user, conversationId, content };
 		const response = await this.messageService.createMessage(params);
 		this.eventEmitter.emit('message.create', response);
@@ -63,7 +63,6 @@ export class MessageController { constructor(
 		});
 		return { conversationId, messageId };
 	}
-
 	// api/conversations/:conversationId/messages/:messageId
 	@Patch(':messageId')
 	async editMessage(
