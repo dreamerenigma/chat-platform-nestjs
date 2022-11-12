@@ -4,7 +4,7 @@ import { instanceToPlain } from "class-transformer";
 import { IGroupService } from "src/groups/group";
 import { Services } from "src/utils/constants";
 import { Group, GroupMessage } from "src/utils/typeorm";
-import { CreateGroupMessageParams, DeleteGroupMessageParams } from "src/utils/types";
+import { CreateGroupMessageParams, DeleteGroupMessageParams, EditGroupMessageParams } from "src/utils/types";
 import { Repository } from "typeorm";
 import { IGroupMessageService } from "./group-messages";
 
@@ -94,5 +94,23 @@ export class GroupMessageService implements IGroupMessageService {
 			);
 			return this.groupMessageRepository.delete({ id: message.id });
 		}
+	}
+
+	async editGroupMessage(params: EditGroupMessageParams) {
+		const messageDB = await this.groupMessageRepository.findOne({
+			where: {
+				id: params.messageId,
+				author: { id: params.userId },
+			}, relations: [
+				'group',
+				'group.creator',
+				'group.recipient',
+				'author',
+			],
+		});
+		if (!messageDB)
+			throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);
+		messageDB.content = params.content;
+		return this.groupMessageRepository.save(messageDB);
 	}
 }
