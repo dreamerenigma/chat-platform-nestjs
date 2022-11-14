@@ -13,7 +13,7 @@ import { Socket, Server } from 'socket.io';
 import { IConversationsService } from 'src/conversations/conversations';
 import { Services } from 'src/utils/constants';
 import { AuthenticatedSocket } from 'src/utils/interfaces';
-import { Conversation, Group, Message } from 'src/utils/typeorm';
+import { Conversation, Group, GroupMessage, Message } from 'src/utils/typeorm';
 import { 
 	CreateGroupMessageResponse, 
 	CreateMessageResponse 
@@ -197,6 +197,13 @@ export class MessagingGateway implements OnGatewayConnection {
 		payload.users.forEach((user) => {
 			const socket = this.sessions.getUserSocket(user.id);
 			socket && socket.emit('onGroupCreate', payload);
-		})
+		});
+	}
+
+	@OnEvent('group.message.update')
+	handleGroupMessageUpdate(payload: GroupMessage) {
+		const room = `group-${payload.group.id}`;
+		console.log(room);
+		this.server.to(room).emit('onGroupMessageUpdate', payload);
 	}
 }
