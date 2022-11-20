@@ -11,6 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { IConversationsService } from 'src/conversations/conversations';
+import { IGroupService } from '../groups/interfaces/group';
 import { Services } from 'src/utils/constants';
 import { AuthenticatedSocket } from 'src/utils/interfaces';
 import { Conversation, Group, GroupMessage, Message } from 'src/utils/typeorm';
@@ -26,12 +27,16 @@ import { IGatewaySessionManager } from './gateway.session';
 		credentials: true,
 	},
 })
-export class MessagingGateway implements OnGatewayConnection {
+export class MessagingGateway 
+	implements OnGatewayConnection, OnGatewayDisconnect 
+{
 	constructor(
 		@Inject(Services.GATEWAY_SESSION_MANAGER) 
 		private readonly sessions: IGatewaySessionManager,
 		@Inject(Services.CONVERSATIONS)
 		private readonly conversationService: IConversationsService,
+		@Inject(Services.GROUPS)
+		private readonly groupsService: IGroupService,
 	) {}
 
 	@WebSocketServer()
@@ -44,30 +49,32 @@ export class MessagingGateway implements OnGatewayConnection {
 		socket.emit('connected', {});
 	}
 
-	@SubscribeMessage('getOnlineGroupUsers')
-	handleGetOnlineGroupUsers(@MessageBody() data: any) {
-		console.log('handleGetOnlineGroupUsers');
-		console.log(data);
-		const clientsInRoom = this.server.sockets.adapter.rooms.get(
-			`group-${data.goupId}`,
-		);
-		console.log(clientsInRoom);
-		this.sessions.getSockets().forEach((socket) => {
-			if (clientsInRoom.has(socket.id)) {
-				console.log(socket.user.email + ' is online');
-			}
-		});
+	handleDisconnect(socket: AuthenticatedSocket) {
+		console.log('handleDisconnect');
+		console.log(`${socket.user.email} disconnected.`);
+		this.sessions.removeUserSocket(socket.user.id);
 	}
 
-	// handleDisconnect(client: AuthenticatedSocket) {
-	// 	console.log('Client Disconnect');
-	// }
-
-	// @SubscribeMessage('onConnect')
-	// handleOnConnect(@ConnectedSocket() client: AuthenticatedSocket) {
-	// 	this.sessions.setUserSocket
-	// }
-
+	@SubscribeMessage('getOnlineGroupUsers')
+	async handleGetOnlineGroupUsers(
+		@MessageBody() data: any, 
+		@ConnectedSocket() socket: AuthenticatedSocket,
+	) {
+		console.log('handleGetOnlineGroupUsers');
+		console.log(data);
+		const group = await this.groupsService.findGroupById(
+			parseInt(data.goupId),
+		);
+		if (group) return;
+		const onlineUsers= [];
+		const offlineUsers = [];
+		group.users.forEach((user) => {
+			const socket = this.sessions.getUserSocket(user.id);
+			socket ? onlineUsers.push(user) : offlineUsers.push(user);
+		});
+		socket.emit('onlineGroupUsersReceived', { onlineUsers, offlineUsers });
+	}
+	
 	@SubscribeMessage('createMessage')
 	handleCreateMessage(@MessageBody() data: any) {
 		console.log('Create Message');
