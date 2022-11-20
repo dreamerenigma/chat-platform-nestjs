@@ -5,7 +5,6 @@ import {
 	Post,
 	Body,
 	Inject,
-	Delete,
 } from '@nestjs/common';
 import { AuthUser } from 'src/utils/decoratiors';
 import { Routes, Services } from '../../utils/constants';
