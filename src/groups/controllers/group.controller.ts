@@ -4,8 +4,8 @@ import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
 import { User } from "src/utils/typeorm";
-import { CreateGroupDto } from "./dtos/CreateGroup.dto";
-import { IGroupService } from "./group";
+import { CreateGroupDto } from "../dtos/CreateGroup.dto";
+import { IGroupService } from "../interfaces/group";
 
 @Controller(Routes.GROUPS)
 export class GroupController {

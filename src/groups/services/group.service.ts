@@ -5,7 +5,7 @@ import { Services } from "src/utils/constants";
 import { Group } from "src/utils/typeorm";
 import { CreateGroupParams, FetchGroupsParams } from "src/utils/types";
 import { Repository } from "typeorm";
-import { IGroupService } from "./group";
+import { IGroupService } from "../interfaces/group";
 
 @Injectable()
 export class GroupService implements IGroupService {
