@@ -11,6 +11,8 @@ import entities from './utils/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GroupModule } from './groups/group.module';
 import { GroupMessageModule } from './group-messages/group-messages.module';
+import { ThrottleModule, ThrottleGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
 	imports: [
@@ -34,8 +36,16 @@ import { GroupMessageModule } from './group-messages/group-messages.module';
 		EventEmitterModule.forRoot(),
 		GroupModule,
 		GroupMessageModule,
+		ThrottleModule.forRoot({
+			ttl: 10,
+			limit: 10,
+		}),
 	],
 	controllers: [],
-	providers: [],
+	providers: [
+		{
+			provide: APP_GUARD,
+		},
+	],
 })
 export class AppModule {}

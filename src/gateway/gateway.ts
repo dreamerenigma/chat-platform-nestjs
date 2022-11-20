@@ -44,7 +44,22 @@ export class MessagingGateway implements OnGatewayConnection {
 		socket.emit('connected', {});
 	}
 
-	// handleDisconnect(client: any) {
+	@SubscribeMessage('getOnlineGroupUsers')
+	handleGetOnlineGroupUsers(@MessageBody() data: any) {
+		console.log('handleGetOnlineGroupUsers');
+		console.log(data);
+		const clientsInRoom = this.server.sockets.adapter.rooms.get(
+			`group-${data.goupId}`,
+		);
+		console.log(clientsInRoom);
+		this.sessions.getSockets().forEach((socket) => {
+			if (clientsInRoom.has(socket.id)) {
+				console.log(socket.user.email + ' is online');
+			}
+		});
+	}
+
+	// handleDisconnect(client: AuthenticatedSocket) {
 	// 	console.log('Client Disconnect');
 	// }
 
@@ -110,7 +125,7 @@ export class MessagingGateway implements OnGatewayConnection {
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
 		console.log('onTypingStart');
-		client.join(data.conversationId)
+		console.log(data.conversationId);
 		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('onTypingStart');
 	}
@@ -121,7 +136,7 @@ export class MessagingGateway implements OnGatewayConnection {
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
 		console.log('onTypingStop');
-		client.join(data.conversationId)
+		console.log(data.conversationId);
 		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('onTypingStop');
 	}
