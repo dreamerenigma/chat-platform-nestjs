@@ -28,6 +28,7 @@ import { APP_GUARD } from '@nestjs/core';
 			database: process.env.MYSQL_DB_NAME,
 			synchronize: true,
 			entities,
+			logging: true,
 		}),
 		ConversationsModule,
 		MessagesModule,
@@ -35,7 +36,7 @@ import { APP_GUARD } from '@nestjs/core';
 		EventEmitterModule.forRoot(),
 		GroupModule,
 		ThrottlerModule.forRoot({
-			ttl: 10,
+			ttl: 60,
 			limit: 10,
 		}),
 	],

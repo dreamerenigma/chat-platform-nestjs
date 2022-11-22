@@ -11,7 +11,6 @@ import {
 	UpdateDateColumn,
 } from "typeorm";
 import { GroupMessage } from "./GroupMessage";
-import { Message } from "./Message";
 import { User } from "./User";
 
 @Entity({ name: 'groups' })

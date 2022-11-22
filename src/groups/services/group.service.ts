@@ -48,6 +48,4 @@ export class GroupService implements IGroupService {
 	saveGroup(group: Group): Promise<Group> {
 		return this.groupRepository.save(group);
 	}
-
-	addUserToGroup() {}
 }
