@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserService } from 'src/users/user';
 import { Group } from 'src/utils/typeorm';
-import { AddGroupRecipientParams, RemoveGroupRecipientParams } from 'src/utils/types';
+import { 
+	AddGroupRecipientParams,
+	RemoveGroupRecipientParams,
+} from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { Services } from '../../utils/constants';
 import { GroupNotFoundException } from '../exceptions/GroupNotFound';
@@ -15,8 +18,6 @@ export class GroupRecipientService implements IGroupRecipientService {
 	constructor(
 		@Inject(Services.USERS) private userService: IUserService,
 		@Inject(Services.GROUPS) private groupService: IGroupService,
-		@InjectRepository(Group)
-		private readonly groupRepository: Repository<Group>,
 	) {}
 	async addGroupRecipient(params: AddGroupRecipientParams) {
 		const group = await this.groupService.findGroupById(params.id);
@@ -30,7 +31,8 @@ export class GroupRecipientService implements IGroupRecipientService {
 		if (inGroup)
 			throw new HttpException('User already in group', HttpStatus.BAD_REQUEST);
 		group.users = [...group.users, recipient];
-		return this.groupService.saveGroup(group);
+		const savedGroup = await this.groupService.saveGroup(group);
+		return { group: savedGroup, user: recipient };
 	}
 
 	/**
