@@ -7,14 +7,23 @@ import { IAuthService } from './auth';
 
 @Injectable()
 export class AuthService implements IAuthService {
-	constructor(@Inject(Services.USERS) private readonly userService: IUserService,
+	constructor(
+		@Inject(Services.USERS) private readonly userService: IUserService,
 	) {}
 
 	async validateUser(userDetails: ValidateUserDetails) {
-		const user = await this.userService.findUser({ email: userDetails.email });
+		const user = await this.userService.findUser(
+				{ email: userDetails.email },
+				{ selectAll: true },
+		);
+		console.log(!user);
 		if (!user) 
 			throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED); 
-		const isPasswordValid = compareHash(userDetails.password, user.password);
+		const isPasswordValid = await compareHash(
+			userDetails.password, 
+			user.password
+		);
+		console.log(isPasswordValid);
 		return isPasswordValid ? user : null;
 	}
 }

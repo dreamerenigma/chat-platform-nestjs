@@ -24,7 +24,7 @@ export class MessageController { constructor(
 	private eventEmitter: EventEmitter2,
 	) {}
 
-	@Throttle(5, 10)
+	// @Throttle(5, 10)
 	@Post()
 	async createMessage(
 		@AuthUser() user: User,

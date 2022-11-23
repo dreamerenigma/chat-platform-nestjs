@@ -11,7 +11,7 @@ export class WebsocketAdapter extends IoAdapter {
 		const sessionRepository = getRepository(Session);
 		const server = super.createIOServer(port, options);
 		server.use(async (socket: AuthenticatedSocket, next) => {
-			console.log('Inside Websocket Adapter Middleware');
+			console.log('Inside Websocket Adapter');
 			const { cookie: clientCookie } = socket.handshake.headers;
 			if (!clientCookie) {
 				console.log('Client has no cookies');
@@ -26,7 +26,6 @@ export class WebsocketAdapter extends IoAdapter {
 				CHAT_APP_SESSION_ID, 
 				process.env.COOKIE_SECRET,
 			);
-			console.log(signedCookie);
 			if (!signedCookie) return next(new Error('Error signed cookie'));
 			const sessionDB = await sessionRepository.findOne({ id: signedCookie });
 			const userDB = plainToInstance(
