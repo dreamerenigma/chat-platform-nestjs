@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IUserService } from 'src/users/user';
 import { Services } from 'src/utils/constants';
 import { Conversation, User } from 'src/utils/typeorm';
-import { CreateConversationParams } from 'src/utils/types';
+import { ConversationAccessParams, CreateConversationParams } from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IConversationsService } from './conversations';
+import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
@@ -21,26 +22,14 @@ export class ConversationsService implements IConversationsService {
 			.createQueryBuilder('conversation')
 			.leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
 			.leftJoinAndSelect('conversation.creator', 'creator')
-			.addSelect([
-				'creator.id',
-				'creator.firstName',
-            'creator.lastName',
-				'creator.email',
-			])
-			.leftJoin('conversation.recipient', 'recipient')
-			.addSelect([
-				'recipient.id',
-				'recipient.firstName',
-				'recipient.lastName',
-				'recipient.email',
-		])
-		.where('creator.id = :id', { id })
-		.orWhere('recipient.id = :id', { id })
-		.orderBy('conversation.lastMessageSentAt', 'DESC')
-		.getMany();
+			.leftJoinAndSelect('conversation.recipient', 'recipient')
+			.where('creator.id = :id', { id })
+			.orWhere('recipient.id = :id', { id })
+			.orderBy('conversation.lastMessageSentAt', 'DESC')
+			.getMany();
 	}
 
-	async findConversationById(id: number): Promise<Conversation> {
+	async findConversationById(id: number): Promise<Conversation | undefined> {
 		return this.conversationRepository.findOne({ 
 			where: { id },
 			relations: ['lastMessageSent', 'creator', 'recipient'],
@@ -59,41 +48,36 @@ export class ConversationsService implements IConversationsService {
 				'Cannot Create conversation',
 				HttpStatus.BAD_REQUEST,
 			);
-
-			const existingConversation = await this.conversationRepository
-				.createQueryBuilder('conversation')
-				.leftJoinAndSelect('conversation.users', 'user')
-				.where('user.id = :userId OR user.id = :otherId', {
-					userId: user.id,
-					therId: recipient.id,
-				})
-				.getMany();
 			
-			console.log(existingConversation);
-
-			return existingConversation[0];
-			
-		// const existingConversation = await this.conversationRepository.findOne({
-		// 	where: [
-		// 		{
-		// 			creator: { id: user.id },
-		// 			recipient: { id: recipient.id },
-		// 		},
-		// 		{
-		// 			creator: { id: recipient.id },
-		// 			recipient: { id: user.id },
-		// 		},
-		// 	],
-		// });
+		const existingConversation = await this.conversationRepository.findOne({
+			where: [
+				{
+					creator: { id: user.id },
+					recipient: { id: recipient.id },
+				},
+				{
+					creator: { id: recipient.id },
+					recipient: { id: user.id },
+				},
+			],
+		});
 		
-		// if (existingConversation)
-		// 	throw new HttpException('Conversation exists', HttpStatus.CONFLICT);
+		if (existingConversation)
+			throw new HttpException('Conversation exists', HttpStatus.CONFLICT);
 			
-		// const conversation = this.conversationRepository.create({ 
-		// 	users: [user, recipient],
-		// 	type: 'private',
-		// });
+		const conversation = this.conversationRepository.create({ 
+			creator: user,
+			recipient: recipient,
+		});
 
-		// return this.conversationRepository.save(conversation);
+		return this.conversationRepository.save(conversation);
+	}
+
+	async hasAccess({ conversationId: id, userId }: ConversationAccessParams) {
+		const conversation = await this.findConversationById(id);
+		if (!conversation) throw new ConversationNotFoundException();
+		return (
+			conversation.creator.id === userId || conversation.recipient.id === userId
+		);
 	}
 }

@@ -1,4 +1,5 @@
 import { Conversation, Group, GroupMessage, Message, User } from "./typeorm";
+import { Request } from 'express';
 
 export type CreateUserDetails = {
 	email: string;
@@ -32,6 +33,10 @@ export type ConversationIdentityType = 'author' | 'recipient';
 export type FindParticipantParams = Partial<{
 	id: number;
 }>;
+
+export interface AuthenticatedRequest extends Request {
+	user: User;
+};
 
 export interface AuthenticatedRequest extends Request {
 	user: User;
@@ -119,4 +124,9 @@ export type AddGroupUserResponse = {
 export type RemoveGroupUserResponse = {
 	group: Group;
 	user: User;
+};
+
+export type ConversationAccessParams = {
+	conversationId: number;
+	userId: number;
 };
