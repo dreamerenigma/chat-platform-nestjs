@@ -18,7 +18,8 @@ import { Conversation, Group, GroupMessage, Message } from 'src/utils/typeorm';
 import { 
 	AddGroupUserResponse,
 	CreateGroupMessageResponse, 
-	CreateMessageResponse 
+	CreateMessageResponse, 
+	RemoveGroupUserResponse
 } from 'src/utils/types';
 import { IGatewaySessionManager } from './gateway.session';
 
@@ -236,5 +237,12 @@ export class MessagingGateway
 			.to(`group-${payload.group.id}`)
 			.emit('onGroupReceivedNewUser', payload);
 		recipientSocket && recipientSocket.emit('onGroupUserAdd', payload);
+	}
+
+	@OnEvent('group.user.remove')
+	handleGroupUserRemove(payload: RemoveGroupUserResponse) {
+		this.server
+		.to(`group-${payload.group.id}`)
+		.emit('onGroupRemoveUser', payload);
 	}
 }

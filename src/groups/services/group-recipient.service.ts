@@ -43,6 +43,8 @@ export class GroupRecipientService implements IGroupRecipientService {
 	 */
 	async removeGroupRecipient(params: RemoveGroupRecipientParams) {
 		const { issuerId, removeUserId, id } = params;
+		const userToBeRemoved = await this.userService.findUser({ id: removeUserId });
+		if (!userToBeRemoved) throw new HttpException('User cannnot be removed', HttpStatus.BAD_REQUEST)
 		const group = await this.groupService.findGroupById(id);
 		if (!group) throw new GroupNotFoundException();
 		// Not group owner
@@ -54,6 +56,7 @@ export class GroupRecipientService implements IGroupRecipientService {
 				HttpStatus.BAD_REQUEST,
 			);
 		group.users = group.users.filter((u) => u.id !== removeUserId);
-		return this.groupService.saveGroup(group);
+		const savedGroup = await this.groupService.saveGroup(group);
+		return { group: savedGroup, user: userToBeRemoved };
 	}
 }
