@@ -1,5 +1,5 @@
 import { Conversation, User } from "src/utils/typeorm";
-import { CreateConversationParams } from "src/utils/types";
+import { ConversationAccessParams, CreateConversationParams } from "src/utils/types";
 
 export interface IConversationsService {
 	createConversation(
@@ -7,5 +7,6 @@ export interface IConversationsService {
 		conversationParams: CreateConversationParams
 	): Promise<Conversation>;
 	getConversations(id: number): Promise<Conversation[]>;
-	findConversationById(id: number): Promise<Conversation>;
+	findConversationById(id: number): Promise<Conversation | undefined>;
+	hasAccess(params: ConversationAccessParams):Promise< boolean>;
 }
