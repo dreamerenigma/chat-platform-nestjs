@@ -47,11 +47,11 @@ export class GroupRecipientService implements IGroupRecipientService {
 		const group = await this.groupService.findGroupById(id);
 		if (!group) throw new GroupNotFoundException();
 		// Not group owner
-		if (group.creator.id !== issuerId) throw new NotGroupOwnerException();
+		if (group.owner.id !== issuerId) throw new NotGroupOwnerException();
 		// Temporary
-		if (group.creator.id === removeUserId)
+		if (group.owner.id === removeUserId)
 			throw new HttpException(
-				'Cannot remove yourself as ownner',
+				'Cannot remove yourself as owner',
 				HttpStatus.BAD_REQUEST,
 			);
 		group.users = group.users.filter((u) => u.id !== removeUserId);
