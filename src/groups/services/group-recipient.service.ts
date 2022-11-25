@@ -6,7 +6,6 @@ import {
 	AddGroupRecipientParams,
 	RemoveGroupRecipientParams,
 } from 'src/utils/types';
-import { Repository } from 'typeorm';
 import { Services } from '../../utils/constants';
 import { GroupNotFoundException } from '../exceptions/GroupNotFound';
 import { NotGroupOwnerException } from '../exceptions/NotGroupOwner';

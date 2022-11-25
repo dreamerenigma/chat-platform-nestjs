@@ -1,0 +1,131 @@
+{
+  "version": "0.0.1",
+  "name": "chat_app_nestjs",
+  "dependencies": {
+    "@nestjs/common": {
+      "version": "9.1.2",
+      "resolved": "https://registry.npmjs.org/@nestjs/common/-/common-9.1.2.tgz",
+      "overridden": false
+    },
+    "@nestjs/config": {
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/@nestjs/config/-/config-2.2.0.tgz",
+      "overridden": false
+    },
+    "@nestjs/core": {
+      "version": "9.1.2",
+      "resolved": "https://registry.npmjs.org/@nestjs/core/-/core-9.1.2.tgz",
+      "overridden": false
+    },
+    "@nestjs/event-emitter": {
+      "version": "1.3.1",
+      "resolved": "https://registry.npmjs.org/@nestjs/event-emitter/-/event-emitter-1.3.1.tgz",
+      "overridden": false
+    },
+    "@nestjs/passport": {
+      "version": "9.0.0",
+      "resolved": "https://registry.npmjs.org/@nestjs/passport/-/passport-9.0.0.tgz",
+      "overridden": false
+    },
+    "@nestjs/platform-express": {
+      "version": "9.1.2",
+      "resolved": "https://registry.npmjs.org/@nestjs/platform-express/-/platform-express-9.1.2.tgz",
+      "overridden": false
+    },
+    "@nestjs/platform-socket.io": {
+      "version": "9.1.4",
+      "resolved": "https://registry.npmjs.org/@nestjs/platform-socket.io/-/platform-socket.io-9.1.4.tgz",
+      "overridden": false
+    },
+    "@nestjs/throttler": {
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/@nestjs/throttler/-/throttler-3.1.0.tgz",
+      "overridden": false
+    },
+    "@nestjs/typeorm": {
+      "version": "9.0.1",
+      "resolved": "https://registry.npmjs.org/@nestjs/typeorm/-/typeorm-9.0.1.tgz",
+      "overridden": false
+    },
+    "@nestjs/websockets": {
+      "version": "9.1.4",
+      "resolved": "https://registry.npmjs.org/@nestjs/websockets/-/websockets-9.1.4.tgz",
+      "overridden": false
+    },
+    "bcrypt": {
+      "version": "5.0.1",
+      "resolved": "https://registry.npmjs.org/bcrypt/-/bcrypt-5.0.1.tgz",
+      "overridden": false
+    },
+    "class-transformer": {
+      "version": "0.5.1",
+      "resolved": "https://registry.npmjs.org/class-transformer/-/class-transformer-0.5.1.tgz",
+      "overridden": false
+    },
+    "class-validator": {
+      "version": "0.13.2",
+      "resolved": "https://registry.npmjs.org/class-validator/-/class-validator-0.13.2.tgz",
+      "overridden": false
+    },
+    "connect-typeorm": {
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/connect-typeorm/-/connect-typeorm-2.0.0.tgz",
+      "overridden": false
+    },
+    "cookie-parser": {
+      "version": "1.4.6",
+      "resolved": "https://registry.npmjs.org/cookie-parser/-/cookie-parser-1.4.6.tgz",
+      "overridden": false
+    },
+    "cookie": {
+      "version": "0.5.0",
+      "resolved": "https://registry.npmjs.org/cookie/-/cookie-0.5.0.tgz",
+      "overridden": false
+    },
+    "express-session": {
+      "version": "1.17.3",
+      "resolved": "https://registry.npmjs.org/express-session/-/express-session-1.17.3.tgz",
+      "overridden": false
+    },
+    "mysql2": {
+      "version": "2.3.3",
+      "resolved": "https://registry.npmjs.org/mysql2/-/mysql2-2.3.3.tgz",
+      "overridden": false
+    },
+    "passport-local": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/passport-local/-/passport-local-1.0.0.tgz",
+      "overridden": false
+    },
+    "passport": {
+      "version": "0.6.0",
+      "resolved": "https://registry.npmjs.org/passport/-/passport-0.6.0.tgz",
+      "overridden": false
+    },
+    "reflect-metadata": {
+      "version": "0.1.13",
+      "resolved": "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.1.13.tgz",
+      "overridden": false
+    },
+    "rimraf": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-3.0.2.tgz",
+      "overridden": false
+    },
+    "rxjs": {
+      "version": "7.5.7",
+      "resolved": "https://registry.npmjs.org/rxjs/-/rxjs-7.5.7.tgz",
+      "overridden": false
+    },
+    "throttler": {
+      "version": "0.0.1",
+      "resolved": "https://registry.npmjs.org/throttler/-/throttler-0.0.1.tgz",
+      "overridden": false
+    },
+    "typeorm": {
+      "version": "0.2.37",
+      "resolved": "https://registry.npmjs.org/typeorm/-/typeorm-0.2.37.tgz",
+      "overridden": false
+    }
+  }
+}
