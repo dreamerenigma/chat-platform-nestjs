@@ -255,6 +255,13 @@ export class MessagingGateway
 		const onlineUsers = group.users
 			.map((user) => this.sessions.getUserSocket(user.id) && user)
 			.filter((user) => user);
-			// this.server.to(ROOM_NAME).emit('onlineGroupUsersReceived', { onlineUsers });
+		// this.server.to(ROOM_NAME).emit('onlineGroupUsersReceived', { onlineUsers });
+	}
+
+	@OnEvent('group.owner.update')
+	handleGroupOwnerUpdate(payload: Group) {
+		const ROOM_NAME = `group-${payload.id}`;
+		console.log('Inside group.owner.update');
+		this.server.to(ROOM_NAME).emit('onGroupOwnerUpdate', payload);
 	}
 }
