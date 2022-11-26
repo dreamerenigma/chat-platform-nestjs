@@ -1,6 +1,7 @@
 import { Group, User } from "src/utils/typeorm";
 import { 
 	AccessParams, 
+	CheckUserGroupParams, 
 	CreateGroupParams, 
 	FetchGroupsParams, 
 	TransferOwnerParams 

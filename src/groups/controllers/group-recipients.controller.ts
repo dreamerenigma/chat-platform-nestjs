@@ -34,6 +34,23 @@ export class GroupRecipientsController {
 		return response.group;
 	}
 
+	/**
+	 * Leaves a Group
+	 * @param user the authenticated user
+	 * @param groupId tge id of the group 
+	 * @returns the updated Group that the user had left
+	 */
+	@Delete('leave')
+	async leaveGroup(
+		@AuthUser() { id: userId }: User,
+		@Param('id', ParseIntPipe) groupId: number,
+	) {
+		return this.groupRecipientService.leaveGroup({ 
+			id: groupId, 
+			userId, 
+		});
+	}
+
 	@Delete(':userId')
 	async removeGroupRecipient(
 		@AuthUser() { id: issuerId }: User,
@@ -45,4 +62,5 @@ export class GroupRecipientsController {
 		this.eventEmitter.emit('group.user.remove', response);
 		return response.group;
 	}
+
 }
