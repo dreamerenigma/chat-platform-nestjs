@@ -277,4 +277,12 @@ export class MessagingGateway
 			newOwnerSocket.emit('onGroupOwnerUpdate', payload);
 		}
 	}
+
+	@OnEvent('group.user.leave')
+	handleGroupUserLeaqve(payload) {
+		console.log('inside group.user.leave');
+		const ROOM_NAME = `group-${payload.group.id}`;
+		console.log(`Room: ${ROOM_NAME}`);
+		this.server.to(ROOM_NAME).emit('onGroupParticipantLeft', payload); 
+	}
 }
