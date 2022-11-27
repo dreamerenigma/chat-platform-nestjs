@@ -16,6 +16,7 @@ export function isAuthorized(
 	res: Response,
 	next: NextFunction,
 ) {
+	console.log('isAuthorized');
 	if (req.user) next();
-	throw new HttpException('Forbidden', HttpStatus.UNAUTHORIZED);
+	else throw new HttpException('Forbidden', HttpStatus.UNAUTHORIZED);
 }

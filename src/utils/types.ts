@@ -1,4 +1,10 @@
-import { Conversation, Group, GroupMessage, Message, User } from "./typeorm";
+import { 
+	Conversation, 
+	Group, 
+	GroupMessage, 
+	Message, 
+	User,
+} from "./typeorm";
 import { Request } from 'express';
 
 export type CreateUserDetails = {
