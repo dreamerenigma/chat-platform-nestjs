@@ -1,4 +1,8 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
+import { 
+	Inject, 
+	Injectable, 
+	NestMiddleware,
+} from '@nestjs/common';
 import { NextFunction } from 'express';
 import { Services } from 'src/utils/constants';
 import { AuthenticatedRequest } from 'src/utils/types';
