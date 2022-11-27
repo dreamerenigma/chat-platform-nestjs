@@ -54,7 +54,7 @@ export class ConversationsService implements IConversationsService {
 	}
 
 	async createConversation(user: User, params: CreateConversationParams) {
-		const { email, message: content} = params;
+		const { email , message: content} = params;
 		const recipient = await this.userService.findUser({ email });
 		if (!recipient) 
 			throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
@@ -73,14 +73,10 @@ export class ConversationsService implements IConversationsService {
 		const savedConversation = await this.conversationRepository.save(
 			conversation,
 		);
-		const messageParams = { 
-			content, 
-			conversation, 
-			author: user,
-		};
+		const messageParams = { content, conversation, author: user };
 		const message = this.messageRepository.create(messageParams);
 		const savedMessage = await this.messageRepository.save(message);
-		return savedMessage;
+		return savedConversation;
 	}
 
 	async hasAccess({ id, userId }: AccessParams) {
