@@ -6,7 +6,7 @@ import {
 	Inject, 
 	Param, 
 	Post, 
-	UseGuards 
+	UseGuards,
 } from '@nestjs/common';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
@@ -24,7 +24,6 @@ export class ConversationsController {
 		private readonly conversationsService: IConversationsService,
 		private readonly events: EventEmitter2,
 	) {}
-	@Get('test/endpoint/check')test() {return}
 
 	@Post()
 	async createConversation(
