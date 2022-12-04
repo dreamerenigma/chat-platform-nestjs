@@ -8,6 +8,7 @@ import {
 	ParseIntPipe, 
 	Patch, 
 	Post,
+	Query,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decoratiors';
@@ -41,9 +42,11 @@ export class MessageController { constructor(
 	async getMessagesFromConversation(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) id: number,
+		@Query('offset', ParseIntPipe) skip: number,
 	) {
 		console.log(id);
-		const messages = await this.messageService.getMessagesByConversationId(id);
+		// When user first loads the page, fetch messages with OFFSET = 0
+		const messages = await this.messageService.getMessagesByConversationId(id, skip);
 		return { id, messages };
 	}
 

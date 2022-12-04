@@ -43,11 +43,16 @@ export class MessageService implements IMessageService {
 		return { message: savedMessage, conversation: updatedConversation };
 	}
 
-	getMessagesByConversationId(conversationId: number): Promise<Message[]> {
+	getMessagesByConversationId(
+		conversationId: number,
+		skip: number,
+	): Promise<Message[]> {
 		return this.messageRepository.find({
 			relations: ['author'],
 			where: { conversation: { id: conversationId } },
 			order: { createdAt: 'DESC' },
+			take: 100,
+			skip,
 		});
 	}
 

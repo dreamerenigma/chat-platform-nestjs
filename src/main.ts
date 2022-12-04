@@ -35,8 +35,7 @@ async function bootstrap() {
 	app.use(passport.session());
 
 	try {
-		await app.listen(PORT, () => 
-			console.log(`Running on Port ${PORT}`));
+		await app.listen(PORT, () => console.log(`Running on Port ${PORT}`));
 	} catch (err) {
 		console.log(err);
 	}
