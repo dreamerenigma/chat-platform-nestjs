@@ -152,3 +152,10 @@ export type CheckUserGroupParams = {
 	id: number;
 	userId: number;
 };
+
+export type CreateFriendParams = {
+	user: User;
+	email: string;
+};
+
+export type FriendStatus = 'accepted' | 'pending' | 'blocked';

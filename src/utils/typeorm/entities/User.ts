@@ -6,9 +6,9 @@ import {
 	JoinTable, 
 	ManyToMany, 
 	OneToMany, 
-	PrimaryGeneratedColumn 
+	PrimaryGeneratedColumn, 
 } from 'typeorm';
-import { Conversation } from './Conversation';
+import { Friend } from './Friend';
 import { Group } from './Group';
 import { Message } from './Message';
 
