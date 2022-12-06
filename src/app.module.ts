@@ -7,11 +7,13 @@ import { UsersModule } from './users/users.module';
 import { ConversationsModule } from './conversations/conversations.module';
 import { MessagesModule } from './messages/messages.module';
 import { GatewayModule } from './gateway/gateway.module';
-import entities from './utils/typeorm';
+import entities, { FriendRequest } from './utils/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { GroupModule } from './groups/group.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { FriendRequestModule } from './friend-requests/friend-requests.module';
+import { FriendsModule } from './friends/friends.module';
 
 @Module({
 	imports: [
@@ -28,13 +30,15 @@ import { APP_GUARD } from '@nestjs/core';
 			database: process.env.MYSQL_DB_NAME,
 			synchronize: true,
 			entities,
-			logging: true,
+			logging: false,
 		}),
 		ConversationsModule,
 		MessagesModule,
 		GatewayModule,
 		EventEmitterModule.forRoot(),
 		GroupModule,
+		FriendRequestModule,
+		FriendsModule,
 		// ThrottlerModule.forRoot({
 		// 	ttl: 60,
 		// 	limit: 10,
