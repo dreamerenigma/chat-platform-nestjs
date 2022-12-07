@@ -5,7 +5,7 @@ import {
 	ParseIntPipe, 
 	Post, 
 } from "@nestjs/common";
-import { Param, Patch } from "@nestjs/common/decorators";
+import { Get, Param, Patch } from "@nestjs/common/decorators";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
 import { User } from "src/utils/typeorm";
@@ -18,6 +18,11 @@ export class FriendRequestController {
 		@Inject(Services.FRIENDS_REQUESTS_SERVICE) 
 		private readonly friendRequestService: IFriendRequestService,
 	) {}
+
+	@Get()
+	getFriendRequest(@AuthUser() user: User) {
+		return this.friendRequestService.getFriendRequest(user.id);
+	}
 
 	@Post()
 	createFriend(
