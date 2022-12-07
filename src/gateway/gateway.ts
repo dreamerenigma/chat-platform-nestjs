@@ -19,7 +19,7 @@ import {
 	AddGroupUserResponse,
 	CreateGroupMessageResponse, 
 	CreateMessageResponse, 
-	RemoveGroupUserResponse
+	RemoveGroupUserResponse,
 } from 'src/utils/types';
 import { IGatewaySessionManager } from './gateway.session';
 

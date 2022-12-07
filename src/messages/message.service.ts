@@ -111,7 +111,8 @@ export class MessageService implements IMessageService {
 			where: {
 				id: params.messageId,
 				author: { id: params.userId },
-			}, relations: [
+			}, 
+			relations: [
 				'conversation',
 				'conversation.creator',
 				'conversation.recipient',

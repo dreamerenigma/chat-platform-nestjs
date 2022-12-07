@@ -49,6 +49,4 @@ export class ConversationsController {
 		const conversation = await this.conversationsService.findConversationById(id);
 		return conversation;
 	}
-
-	// @Delete(':conversationId/messages/:messageId')
 }

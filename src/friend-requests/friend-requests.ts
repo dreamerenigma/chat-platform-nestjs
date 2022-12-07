@@ -8,6 +8,7 @@ import {
 export interface IFriendRequestService {
 	accept(params: FriendRequestParams);
 	cancel(params: CancelFriendRequestParams): Promise<FriendRequest>;
+	reject(params: CancelFriendRequestParams);
 	create(params: CreateFriendParams);
 	isFriends(userOneId: number, userTwoId: number);
 	getFriendRequests(userId: number): Promise<FriendRequest[]>;

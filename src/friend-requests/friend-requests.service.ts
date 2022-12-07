@@ -72,6 +72,11 @@ export class FriendRequestService implements IFriendRequestService {
 		return this.friendRepository.save(newFriend);
 	}
 
+	async reject({id, userId }: CancelFriendRequestParams) {
+		const friendRequest = await this.findById(id);
+		if (!friendRequest) throw new FriendRequestNotFoundException();
+	}
+
 	isPending(userOneId: number, userTwoId: number) {
 		return this.friendRequestRepository.findOne({ 
 			where: [

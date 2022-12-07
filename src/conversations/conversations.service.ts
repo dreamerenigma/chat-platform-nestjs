@@ -3,7 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IUserService } from 'src/users/user';
 import { Services } from 'src/utils/constants';
 import { Conversation, Message, User } from 'src/utils/typeorm';
-import { AccessParams, CreateConversationParams } from 'src/utils/types';
+import { 
+	AccessParams, 
+	CreateConversationParams,
+} from 'src/utils/types';
 import { Repository } from 'typeorm';
 import { IConversationsService } from './conversations';
 import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
