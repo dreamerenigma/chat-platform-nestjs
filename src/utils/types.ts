@@ -1,5 +1,7 @@
 import { 
 	Conversation, 
+	Friend,
+	FriendRequest,
 	Group, 
 	GroupMessage, 
 	Message, 
@@ -39,10 +41,6 @@ export type ConversationIdentityType = 'author' | 'recipient';
 export type FindParticipantParams = Partial<{
 	id: number;
 }>;
-
-export interface AuthenticatedRequest extends Request {
-	user: User;
-};
 
 export interface AuthenticatedRequest extends Request {
 	user: User;
@@ -94,9 +92,9 @@ export type FetchGroupsParams = {
 };
 
 export type CreateGroupMessageParams = {
-	groupId: number;
-	content: string;
 	author: User;
+	content: string;
+	groupId: number;
 };
 
 export type CreateGroupMessageResponse = {
@@ -161,6 +159,11 @@ export type CreateFriendParams = {
 export type FriendRequestStatus = 'accepted' | 'pending';
 
 export type FriendRequestParams = {
+	id: number;
+	userId: number;
+};
+
+export type CancelFriendRequestParams = {
 	id: number;
 	userId: number;
 };

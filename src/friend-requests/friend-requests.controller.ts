@@ -1,11 +1,14 @@
 import { 
 	Body, 
-	Controller, 
+	Controller,
+	Delete,
+	Get,
 	Inject, 
+	Param,
 	ParseIntPipe, 
+	Patch,
 	Post, 
 } from "@nestjs/common";
-import { Get, Param, Patch } from "@nestjs/common/decorators";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
 import { User } from "src/utils/typeorm";
@@ -39,5 +42,13 @@ export class FriendRequestController {
 		@Param('id', ParseIntPipe) id: number,
 	) {
 		return this.friendRequestService.accept({ id, userId });
+	}
+
+	@Delete(':id/cancel')
+	cancelFriendRequest(
+		@AuthUser() { id: userId }: User,
+		@Param('id', ParseIntPipe) id: number,
+	) {
+		return this.friendRequestService.cancel({ id, userId });
 	}
 }

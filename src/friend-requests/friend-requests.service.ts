@@ -5,7 +5,7 @@ import { IUserService } from "src/users/user";
 import { Services } from "src/utils/constants";
 import { FriendRequest } from "src/utils/typeorm";
 import { Friend } from "src/utils/typeorm/entities/Friend";
-import { CreateFriendParams, FriendRequestParams } from "src/utils/types";
+import { CancelFriendRequestParams, CreateFriendParams, FriendRequestParams } from "src/utils/types";
 import { Repository } from "typeorm";
 import { FriendRequestException } from "./exceptions/FriendRequest";
 import { FriendRequestAcceptedException } from "./exceptions/FriendRequestAccepted";
@@ -33,6 +33,13 @@ export class FriendRequestService implements IFriendRequestService {
 			],
 			relations: ['receiver', 'sender'],
 		});
+	}
+
+	async cancel({ id, userId }: CancelFriendRequestParams) {
+		const friendRequest = await this.findById(id);
+		if (!friendRequest) throw new FriendRequestNotFoundException();
+		if (friendRequest.sender.id !== userId) throw new FriendRequestException();
+		return this.friendRequestRepository.delete(id);
 	}
 
 	async create({ user: sender, email }: CreateFriendParams) {
