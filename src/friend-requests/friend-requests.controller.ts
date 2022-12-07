@@ -9,9 +9,9 @@ import {
 	Patch,
 	Post, 
 } from "@nestjs/common";
-import { Routes, Services } from "src/utils/constants";
-import { AuthUser } from "src/utils/decoratiors";
-import { User } from "src/utils/typeorm";
+import { Routes, Services } from '../utils/constants';
+import { AuthUser } from "../utils/decoratiors";
+import { User } from "../utils/typeorm";
 import { CreateFriendDto } from "./dtos/CreateFriend.dto";
 import { IFriendRequestService } from "./friend-requests";
 
@@ -23,12 +23,12 @@ export class FriendRequestController {
 	) {}
 
 	@Get()
-	getFriendRequest(@AuthUser() user: User) {
-		return this.friendRequestService.getFriendRequest(user.id);
+	getFriendRequests(@AuthUser() user: User) {
+		return this.friendRequestService.getFriendRequests(user.id);
 	}
 
 	@Post()
-	createFriend(
+	createFriendRequest(
 		@AuthUser() user: User, 
 		@Body() {email }: CreateFriendDto,
 	) {

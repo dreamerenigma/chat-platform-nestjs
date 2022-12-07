@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { UserNotFoundException } from "src/users/exceptions/UserNotFound";
-import { IUserService } from "src/users/user";
-import { Services } from "src/utils/constants";
-import { FriendRequest } from "src/utils/typeorm";
-import { Friend } from "src/utils/typeorm/entities/Friend";
+import { UserNotFoundException } from "../users/exceptions/UserNotFound";
+import { IUserService } from "../users/user";
+import { Services } from "../utils/constants";
+import { FriendRequest } from "../utils/typeorm";
+import { Friend } from "../utils/typeorm/entities/Friend";
 import { CancelFriendRequestParams, CreateFriendParams, FriendRequestParams } from "src/utils/types";
 import { Repository } from "typeorm";
 import { FriendRequestException } from "./exceptions/FriendRequest";
@@ -24,7 +24,7 @@ export class FriendRequestService implements IFriendRequestService {
 		private readonly userService: IUserService,
 	) {}
 
-	getFriendRequest(id: number): Promise<FriendRequest[]> {
+	getFriendRequests(id: number): Promise<FriendRequest[]> {
 		const status = 'pending';
 		return this.friendRequestRepository.find({
 			where: [
@@ -39,7 +39,8 @@ export class FriendRequestService implements IFriendRequestService {
 		const friendRequest = await this.findById(id);
 		if (!friendRequest) throw new FriendRequestNotFoundException();
 		if (friendRequest.sender.id !== userId) throw new FriendRequestException();
-		return this.friendRequestRepository.delete(id);
+		await this.friendRequestRepository.delete(id);
+		return friendRequest;
 	}
 
 	async create({ user: sender, email }: CreateFriendParams) {
