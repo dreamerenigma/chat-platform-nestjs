@@ -1,4 +1,4 @@
-import { 
+ import { 
 	Body, 
 	Controller,
 	Delete,
@@ -52,7 +52,7 @@ export class FriendRequestController {
 		return this.friendRequestService.cancel({ id, userId });
 	}
 
-	@Delete(':id/reject')
+	@Patch(':id/reject')
 	rejectFriendRequest(
 		@AuthUser() { id: userId }: User,
 		@Param('id', ParseIntPipe) id: number,

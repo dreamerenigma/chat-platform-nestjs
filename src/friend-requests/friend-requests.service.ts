@@ -5,7 +5,11 @@ import { IUserService } from "../users/user";
 import { Services } from "../utils/constants";
 import { FriendRequest } from "../utils/typeorm";
 import { Friend } from "../utils/typeorm/entities/Friend";
-import { CancelFriendRequestParams, CreateFriendParams, FriendRequestParams } from "src/utils/types";
+import { 
+	CancelFriendRequestParams, 
+	CreateFriendParams, 
+	FriendRequestParams, 
+} from "src/utils/types";
 import { Repository } from "typeorm";
 import { FriendRequestException } from "./exceptions/FriendRequest";
 import { FriendRequestAcceptedException } from "./exceptions/FriendRequestAccepted";
@@ -29,7 +33,7 @@ export class FriendRequestService implements IFriendRequestService {
 		return this.friendRequestRepository.find({
 			where: [
 				{ sender: { id }, status }, 
-				{ receiver: { id }, status }
+				{ receiver: { id }, status },
 			],
 			relations: ['receiver', 'sender'],
 		});
@@ -74,7 +78,12 @@ export class FriendRequestService implements IFriendRequestService {
 
 	async reject({id, userId }: CancelFriendRequestParams) {
 		const friendRequest = await this.findById(id);
-		if (!friendRequest) throw new FriendRequestNotFoundException();
+		if (friendRequest.status === 'accepted') 
+			throw new FriendRequestNotFoundException();
+		if (friendRequest.receiver.id !== userId) 
+			throw new FriendRequestException();
+		friendRequest.status = 'rejected';
+		return this.friendRequestRepository.save(friendRequest);
 	}
 
 	isPending(userOneId: number, userTwoId: number) {

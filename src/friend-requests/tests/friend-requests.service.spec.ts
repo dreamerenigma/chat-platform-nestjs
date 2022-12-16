@@ -72,7 +72,6 @@ describe('FriendRequestsService', () => {
 	});
 
 	describe('cancel friend requst', () => {
-
 		const mockFriendRequest = { sender: { id: 50 } } as FriendRequest;
 
 		it('should not found the friend request', async () => {
