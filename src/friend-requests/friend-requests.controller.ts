@@ -1,4 +1,4 @@
- import { 
+import { 
 	Body, 
 	Controller,
 	Delete,
@@ -14,12 +14,14 @@ import { AuthUser } from "../utils/decoratiors";
 import { User } from "../utils/typeorm";
 import { CreateFriendDto } from "./dtos/CreateFriend.dto";
 import { IFriendRequestService } from "./friend-requests";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @Controller(Routes.FRIEND_REQUESTS)
 export class FriendRequestController {
 	constructor(
 		@Inject(Services.FRIENDS_REQUESTS_SERVICE) 
 		private readonly friendRequestService: IFriendRequestService,
+		private event: EventEmitter2,
 	) {}
 
 	@Get()
@@ -28,12 +30,14 @@ export class FriendRequestController {
 	}
 
 	@Post()
-	createFriendRequest(
+	async createFriendRequest(
 		@AuthUser() user: User, 
 		@Body() {email }: CreateFriendDto,
 	) {
 		const params = { user, email };
-		this.friendRequestService.create(params);
+		const friendRequest = await this.friendRequestService.create(params);
+		this.event.emit('friend.request.create', friendRequest);
+		return friendRequest;
 	}
 
 	@Patch(':id/accept')
