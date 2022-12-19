@@ -4,15 +4,23 @@ import { GroupModule } from 'src/groups/group.module';
 import { Services } from 'src/utils/constants';
 import { MessagingGateway } from './gateway';
 import { GatewaySessionManager } from './gateway.session';
+import { FriendsModule } from 'src/friends/friends.module';
 
 @Module({
-	imports: [ConversationsModule, GroupModule],
+	imports: [ConversationsModule, GroupModule, FriendsModule],
 	providers: [
-		MessagingGateway, 
+		MessagingGateway,
+		{
+			provide: Services.GATEWAY_SESSION_MANAGER,
+			useClass: GatewaySessionManager,
+		},
+	],
+	exports: [
+		MessagingGateway,
 		{
 			provide: Services.GATEWAY_SESSION_MANAGER,
 			useClass: GatewaySessionManager,
 		},
 	],
 })
-export class GatewayModule {}
+export class GatewayModule { }

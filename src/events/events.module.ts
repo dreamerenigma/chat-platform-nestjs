@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { FriendRequestEvents } from "./friend-requests.events";
-import { GatewayMetadataExplorer } from '@nestjs/websockets/gateway-metadata-explorer';
+import { FriendRequestsEvents } from "./friend-requests.events";
 import { GatewayModule } from 'src/gateway/gateway.module';
 
 @Module({
 	imports: [GatewayModule],
-	providers: [FriendRequestEvents],
+	providers: [FriendRequestsEvents],
 })
 export class EventsModule {}

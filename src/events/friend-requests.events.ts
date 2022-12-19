@@ -4,7 +4,7 @@ import { MessagingGateway } from 'src/gateway/gateway';
 import { FriendRequest } from '../utils/typeorm';
 
 @Injectable()
-export class FriendRequestEvents {
+export class FriendRequestsEvents {
 	constructor(private readonly gateway: MessagingGateway) {}
 
 	@OnEvent('friendrequest.create')
