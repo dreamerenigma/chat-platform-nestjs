@@ -42,18 +42,20 @@ export class FriendRequestController {
 
 	@Patch(':id/accept')
 	acceptFriendRequest(
-		@AuthUser() {id: userId }: User,
+		@AuthUser() { id: userId }: User,
 		@Param('id', ParseIntPipe) id: number,
 	) {
 		return this.friendRequestService.accept({ id, userId });
 	}
 
 	@Delete(':id/cancel')
-	cancelFriendRequest(
+	async cancelFriendRequest(
 		@AuthUser() { id: userId }: User,
 		@Param('id', ParseIntPipe) id: number,
 	) {
-		return this.friendRequestService.cancel({ id, userId });
+		const response = await this.friendRequestService.cancel({ id, userId });
+		this.event.emit('friendrequest.cancel', response);
+		return response;
 	}
 
 	@Patch(':id/reject')

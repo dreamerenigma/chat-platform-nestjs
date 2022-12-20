@@ -44,7 +44,7 @@ export class FriendRequestService implements IFriendRequestService {
 		if (!friendRequest) throw new FriendRequestNotFoundException();
 		if (friendRequest.sender.id !== userId) throw new FriendRequestException();
 		await this.friendRequestRepository.delete(id);
-		return friendRequest;
+		return friendRequest;;
 	}
 
 	async create({ user: sender, email }: CreateFriendParams) {
