@@ -24,7 +24,6 @@ export type ValidateUserDetails = {
 export type FindUserParams = Partial<{
 	id: number;
 	email: string;
-	username: string;
 }>;
 
 export type FindUserOptions = Partial<{
@@ -92,9 +91,9 @@ export type FetchGroupsParams = {
 };
 
 export type CreateGroupMessageParams = {
-	author: User;
-	content: string;
 	groupId: number;
+	content: string;
+	author: User;
 };
 
 export type CreateGroupMessageResponse = {
@@ -171,4 +170,9 @@ export type CancelFriendRequestParams = {
 export type DeleteFriendRequestParams = {
 	id: number;
 	userId: number;
+};
+
+export type AcceptFriendRequestResponse = {
+	firiend: Friend;
+	friendRequest: FriendRequest;
 };

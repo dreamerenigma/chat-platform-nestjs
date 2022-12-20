@@ -9,7 +9,7 @@ import {
 	Patch,
 	Post, 
 } from "@nestjs/common";
-import { Routes, Services } from '../utils/constants';
+import { Routes, ServerEvents, Services } from '../utils/constants';
 import { AuthUser } from "../utils/decoratiors";
 import { User } from "../utils/typeorm";
 import { CreateFriendDto } from "./dtos/CreateFriend.dto";
@@ -41,11 +41,13 @@ export class FriendRequestController {
 	}
 
 	@Patch(':id/accept')
-	acceptFriendRequest(
+	async acceptFriendRequest(
 		@AuthUser() { id: userId }: User,
 		@Param('id', ParseIntPipe) id: number,
 	) {
-		return this.friendRequestService.accept({ id, userId });
+		const response = await this.friendRequestService.accept({ id, userId });
+		this.event.emit(ServerEvents.FRIEND_REQUEST_ACCEPTED , response);
+		return response;
 	}
 
 	@Delete(':id/cancel')
