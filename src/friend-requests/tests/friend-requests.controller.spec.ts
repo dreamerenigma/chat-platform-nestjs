@@ -36,10 +36,8 @@ describe('FriendRequestController', () => {
 
 	it('should call friendRequestService.getFriendRequests', async () => {
 		await controller.getFriendRequests(mockUser);
-		expect(friendRequestService.getFriendRequests).
-		toHaveBeenCalled();
-		expect(friendRequestService.getFriendRequests).
-		toHaveBeenCalledWith(
+		expect(friendRequestService.getFriendRequests).toHaveBeenCalled();
+		expect(friendRequestService.getFriendRequests).toHaveBeenCalledWith(
 			mockUser.id,
 		);
 	});
