@@ -173,6 +173,6 @@ export type DeleteFriendRequestParams = {
 };
 
 export type AcceptFriendRequestResponse = {
-	firiend: Friend;
+	friend: Friend;
 	friendRequest: FriendRequest;
 };
