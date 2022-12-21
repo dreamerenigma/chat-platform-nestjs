@@ -41,17 +41,17 @@ import { EventsModule } from './events/events.module';
 		FriendRequestModule,
 		FriendsModule,
 		EventsModule,
-		// ThrottlerModule.forRoot({
-		// 	ttl: 60,
-		// 	limit: 10,
-		// }),
+		ThrottlerModule.forRoot({
+			ttl: 60,
+			limit: 10,
+		}),
 	],
 	controllers: [],
 	providers: [
-		// {
-		// 	provide: APP_GUARD,
-		// 	useClass: ThrottlerGuard,
-		// },
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
+		},
 	],
 })
 export class AppModule {}

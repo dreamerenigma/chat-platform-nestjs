@@ -20,12 +20,13 @@ import { EditMessageDto } from './dtos/EditMessage.dto';
 import { Throttle } from '@nestjs/throttler';
 
 @Controller(Routes.MESSAGES)
-export class MessageController { constructor(
-	@Inject(Services.MESSAGES) private readonly messageService: IMessageService,
-	private eventEmitter: EventEmitter2,
+export class MessageController { 
+	constructor(
+		@Inject(Services.MESSAGES) private readonly messageService: IMessageService,
+		private eventEmitter: EventEmitter2,
 	) {}
 
-	// @Throttle(5, 10)
+	@Throttle(5, 10)
 	@Post()
 	async createMessage(
 		@AuthUser() user: User,
@@ -45,8 +46,7 @@ export class MessageController { constructor(
 		@Query('offset', ParseIntPipe) skip: number,
 	) {
 		console.log(id);
-		// When user first loads the page, fetch messages with OFFSET = 0
-		const messages = await this.messageService.getMessagesByConversationId(id, skip);
+		const messages = await this.messageService.getMessagesByConversationId(id);
 		return { id, messages };
 	}
 
