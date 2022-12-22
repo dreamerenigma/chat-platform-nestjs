@@ -15,7 +15,9 @@ import { User } from "../utils/typeorm";
 import { CreateFriendDto } from "./dtos/CreateFriend.dto";
 import { IFriendRequestService } from "./friend-requests";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { SkipThrottle } from "@nestjs/throttler";
 
+@SkipThrottle()
 @Controller(Routes.FRIEND_REQUESTS)
 export class FriendRequestController {
 	constructor(

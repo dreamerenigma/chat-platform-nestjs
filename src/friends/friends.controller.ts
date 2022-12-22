@@ -4,13 +4,15 @@ import {
 	Get, 
 	Inject, 
 	Param,
+	ParseIntPipe,
 } from "@nestjs/common";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
 import { User } from "src/utils/typeorm";
 import { IFriendsService } from "./friends";
-import { ParseIntPipe } from "@nestjs/common/pipes";
+import { SkipThrottle } from "@nestjs/throttler";
 
+@SkipThrottle()
 @Controller(Routes.FRIENDS)
 export class FriendsController {
 	constructor(
