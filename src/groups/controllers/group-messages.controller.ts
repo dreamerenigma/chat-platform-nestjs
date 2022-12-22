@@ -7,7 +7,7 @@ import {
 	Param, 
 	ParseIntPipe, 
 	Patch, 
-	Post 
+	Post, 
 } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { CreateMessageDto } from "src/messages/dtos/CreateMessage.dto";
@@ -16,6 +16,7 @@ import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
 import { User } from "src/utils/typeorm";
 import { IGroupMessageService } from "../interfaces/group-messages";
+import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
 @Controller(Routes.GROUP_MESSAGES)
 export class GroupMessageController {
@@ -25,6 +26,7 @@ export class GroupMessageController {
 		private readonly eventEmitter: EventEmitter2,
 	) {}
 
+	@Throttle(5, 10)
 	@Post()
 	async createGroupMessage(
 		@AuthUser() user: User, 
@@ -42,6 +44,7 @@ export class GroupMessageController {
 	}
 
 	@Get()
+	@SkipThrottle()
 	async getGroupMessages(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) id: number,
@@ -52,6 +55,7 @@ export class GroupMessageController {
 	}
 
 	@Delete(':messageId')
+	@SkipThrottle()
 	async deleteGroupMessage(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) groupId: number,

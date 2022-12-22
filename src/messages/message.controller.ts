@@ -17,7 +17,7 @@ import { CreateMessageDto } from './dtos/CreateMessage.dto';
 import { IMessageService } from './message';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { EditMessageDto } from './dtos/EditMessage.dto';
-import { Throttle } from '@nestjs/throttler';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller(Routes.MESSAGES)
 export class MessageController { 
@@ -40,6 +40,7 @@ export class MessageController {
 	}
 
 	@Get()
+	@SkipThrottle()
 	async getMessagesFromConversation(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) id: number,

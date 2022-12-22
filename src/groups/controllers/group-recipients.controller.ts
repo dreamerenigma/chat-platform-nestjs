@@ -13,7 +13,9 @@ import { Routes, Services } from '../../utils/constants';
 import { User } from '../../utils/typeorm';
 import { AddGroupRecipientDto } from '../dtos/AddGroupRecipient.dto';
 import { IGroupRecipientService } from '../interfaces/group-recipient';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller(Routes.GROUP_RECIPIENTS)
 export class GroupRecipientsController {
 	constructor(
@@ -31,7 +33,7 @@ export class GroupRecipientsController {
 		const params = { id, userId, email };
 		const response = await this.groupRecipientService.addGroupRecipient(params);
 		this.eventEmitter.emit('group.user.add', response );
-		return response.group;
+		return response;
 	}
 
 	/**
@@ -60,9 +62,10 @@ export class GroupRecipientsController {
 		@Param('userId', ParseIntPipe) removeUserId: number,
 	) {
 		const params = { issuerId, id, removeUserId };
-		const response = await this.groupRecipientService.removeGroupRecipient(params);
+		const response = await this.groupRecipientService.removeGroupRecipient(
+			params,
+		);
 		this.eventEmitter.emit('group.user.remove', response);
 		return response.group;
 	}
-
 }
