@@ -23,4 +23,4 @@ import { FriendsModule } from 'src/friends/friends.module';
 		},
 	],
 })
-export class GatewayModule { }
+export class GatewayModule {}

@@ -22,12 +22,15 @@ import {
 	RemoveGroupUserResponse,
 } from 'src/utils/types';
 import { IGatewaySessionManager } from './gateway.session';
+import { IFriendsService } from 'src/friends/friends';
 
 @WebSocketGateway({
 	cors: {
 		origin: ['http://localhost:3000'],
 		credentials: true,
 	},
+	pingInterval: 10000,
+	pingTimeout: 15000,
 })
 export class MessagingGateway 
 	implements OnGatewayConnection, OnGatewayDisconnect 
@@ -39,6 +42,8 @@ export class MessagingGateway
 		private readonly conversationService: IConversationsService,
 		@Inject(Services.GROUPS)
 		private readonly groupsService: IGroupService,
+		@Inject(Services.FRIENDS_SERVICE)
+		private readonly friendsService: IFriendsService,
 	) {}
 
 	@WebSocketServer()
@@ -47,7 +52,6 @@ export class MessagingGateway
 	handleConnection(socket: AuthenticatedSocket, ...args: any[]) {
 		console.log('Incoming Connection');
 		this.sessions.setUserSocket(socket.user.id, socket);
-		console.log(this.sessions.getSockets());
 		socket.emit('connected', {});
 	}
 
@@ -151,7 +155,6 @@ export class MessagingGateway
 	@OnEvent('message.create')
 	handleMessageCreateEvent(payload: CreateMessageResponse) {
 		console.log('Inside message.create');
-		console.log(payload);
 		const { 
 			author, 
 			conversation: { creator, recipient },
@@ -164,15 +167,12 @@ export class MessagingGateway
 				: this.sessions.getUserSocket(creator.id);
 
 		if (authorSocket) authorSocket.emit('onMessage', payload);
-		console.log(authorSocket);
-		console.log(recipientSocket);
 		if (recipientSocket) recipientSocket.emit('onMessage', payload);
 	}
 
 	@OnEvent('conversation.create')
 	handleConversationCreateEvent(payload: Conversation) {
 		console.log('Inside conversation.create');
-		console.log(payload.recipient);
 		const recipientSocket = this.sessions.getUserSocket(payload.recipient.id);
 		if (recipientSocket) recipientSocket.emit('onConversation', payload);
 	}
@@ -186,9 +186,10 @@ export class MessagingGateway
 		);
 		if (!conversation) return;
 		const { creator, recipient } = conversation;
-		const recipientSocket = creator.id === payload.userId
-			? this.sessions.getUserSocket(recipient.id)
-			: this.sessions.getUserSocket(creator.id);
+		const recipientSocket = 
+			creator.id === payload.userId
+				? this.sessions.getUserSocket(recipient.id)
+				: this.sessions.getUserSocket(creator.id);
 		if (recipientSocket) recipientSocket.emit('onMessageDelete', payload);
 	}
 
@@ -295,7 +296,7 @@ export class MessagingGateway
 		if (leftUserSocket && !socketsInRoom) {
 			console.log('user is online, at latest 1 person is in the room');
 			if (socketsInRoom.has(leftUserSocket.id)) {
-				console.log('Usser is in room.. room set has socket id');
+				console.log('User is in room... room set has socket id');
 				return this.server
 					.to(ROOM_NAME)
 					.emit('onGroupParticipantLeft', payload);
@@ -313,6 +314,27 @@ export class MessagingGateway
 		if (leftUserSocket && !socketsInRoom) {
 			console.log('User is online but there are no sockets in the room');
 			return leftUserSocket.emit('onGroupParticipantLeft', payload);
+		}
+	}
+	
+	@SubscribeMessage('getOnlineFriends')
+	async handleFriendListRetrieve(
+		@MessageBody() data: any, 
+		@ConnectedSocket() socket: AuthenticatedSocket,
+	) {
+		const { user } = socket;
+		if (user) {
+			console.log('user is authenticated');
+			console.log(`fetching ${user.email}'s friends`);
+			const friends = await this.friendsService.getFriends(user.id);
+			const onlineFriends = friends.filter((friend) => 
+				this.sessions.getUserSocket(
+					user.id === friend.receiver.id
+						? friend.sender.id
+						: friend.receiver.id,
+				),
+			);
+			socket.emit('getOnlineFriends', onlineFriends);
 		}
 	}
 }
