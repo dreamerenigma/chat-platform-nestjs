@@ -12,6 +12,7 @@ export class FriendRequestsEvents {
 	@OnEvent('friendrequest.create')
 	friendRequestCreate(payload: FriendRequest) {
 		console.log('friendrequest.create');
+		console.log(payload.receiver);
 		const receiverSocket = this.gateway.sessions.getUserSocket(
 			payload.receiver.id,
 		);

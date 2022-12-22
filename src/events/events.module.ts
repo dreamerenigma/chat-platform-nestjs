@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { FriendRequestsEvents } from "./friend-requests.events";
 import { GatewayModule } from 'src/gateway/gateway.module';
+import { FriendEvents } from './friends.events';
 
 @Module({
 	imports: [GatewayModule],
-	providers: [FriendRequestsEvents],
+	providers: [FriendRequestsEvents, FriendEvents],
 })
 export class EventsModule {}
