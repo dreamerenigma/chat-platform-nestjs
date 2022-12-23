@@ -16,6 +16,8 @@ import { FriendRequestAcceptedException } from "./exceptions/FriendRequestAccept
 import { FriendRequestNotFoundException } from "./exceptions/FriendRequestNotFound";
 import { FriendRequestPending } from "./exceptions/FriendRequestPending";
 import { IFriendRequestService } from './friend-requests';
+import { IFriendsService } from "src/friends/friends";
+import { FriendAlreadyExists } from "src/friends/exceptions/FriendAlreadyExists";
 
 @Injectable()
 export class FriendRequestService implements IFriendRequestService {
@@ -26,6 +28,8 @@ export class FriendRequestService implements IFriendRequestService {
 		private readonly friendRequestRepository: Repository<FriendRequest>,
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
+		@Inject(Services.FRIENDS_SERVICE)
+		private readonly friendsService: IFriendsService,
 	) {}
 
 	getFriendRequests(id: number): Promise<FriendRequest[]> {
@@ -54,6 +58,11 @@ export class FriendRequestService implements IFriendRequestService {
 		if (exists) throw new FriendRequestPending();
 		if (receiver.id === sender.id) 
 			throw new FriendRequestException('Cannot Add Yourself');
+		const isFriends = await this.friendsService.isFriends(
+			sender.id,
+			receiver.id,
+		);
+		if (isFriends) throw new FriendAlreadyExists();
 		const friend = this.friendRequestRepository.create({
 			sender,
 			receiver,
@@ -101,23 +110,6 @@ export class FriendRequestService implements IFriendRequestService {
 					sender: { id: userTwoId },
 					receiver: { id: userOneId },
 					status: 'pending',
-				},
-			],
-		});
-	}
-
-	isFriends(userOneId: number, userTwoId: number) {
-		return this.friendRequestRepository.findOne({ 
-			where: [
-				{
-					sender: { id: userOneId },
-					receiver: { id: userTwoId },
-					status: 'accepted',
-				},
-				{
-					sender: { id: userTwoId },
-					receiver: { id: userOneId },
-					status: 'accepted',
 				},
 			],
 		});
