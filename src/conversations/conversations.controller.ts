@@ -1,7 +1,6 @@
 import { 
 	Body, 
-	Controller, 
-	Delete, 
+	Controller,
 	Get, 
 	Inject, 
 	Param, 
@@ -26,6 +25,10 @@ export class ConversationsController {
 		private readonly conversationsService: IConversationsService,
 		private readonly events: EventEmitter2,
 	) {}
+	@Get('test/endpoint/check')
+	test() {
+		return;
+	}
 
 	@Post()
 	async createConversation(
@@ -42,19 +45,17 @@ export class ConversationsController {
 	}
 
 	@Get()
-	@SkipThrottle()
 	async getConversations(@AuthUser() { id }: User) {
 		return this.conversationsService.getConversations(id);
 	}
 
 	@Get(':id')
-	@SkipThrottle()
 	async getConversationById(@Param('id') id: number) {
 		const conversation = await this.conversationsService.findConversationById(
 			id,
 		);
 		return conversation;
 	}
-
+	
 	// Delete(':conversationId/messages/:messageId')
 }

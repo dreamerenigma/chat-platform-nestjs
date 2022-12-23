@@ -15,6 +15,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { FriendRequestModule } from './friend-requests/friend-requests.module';
 import { FriendsModule } from './friends/friends.module';
 import { EventsModule } from './events/events.module';
+import { ExistsModule } from './exists/exists.module';
 
 @Module({
 	imports: [
@@ -41,6 +42,7 @@ import { EventsModule } from './events/events.module';
 		FriendRequestModule,
 		FriendsModule,
 		EventsModule,
+		ExistsModule,
 		ThrottlerModule.forRoot({
 			ttl: 30,
 			limit: 10,

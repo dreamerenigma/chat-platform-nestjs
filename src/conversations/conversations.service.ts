@@ -34,7 +34,7 @@ export class ConversationsService implements IConversationsService {
 			.getMany();
 	}
 
-	async findConversationById(id: number): Promise<Conversation | undefined> {
+	async findConversationById(id: number) {
 		return this.conversationRepository.findOne({ 
 			where: { id },
 			relations: ['lastMessageSent', 'creator', 'recipient'],
