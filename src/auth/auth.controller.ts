@@ -16,6 +16,7 @@ import { Routes, Services } from 'src/utils/constants';
 import { IAuthService } from './auth';
 import { CreateUserDto } from './dtos/CreateUser.dto';
 import { AuthenticatedGuard, LocalAuthGuard } from './utils/Guards';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller(Routes.AUTH)
 export class AuthController {
@@ -24,13 +25,14 @@ export class AuthController {
 		@Inject(Services.USERS) private userService: IUserService,
 	) {}
 
+	@Throttle(1, 60)
 	@Post('register')
 	async registerUser(@Body() createUserDto: CreateUserDto) {
 		return instanceToPlain(await this.userService.createUser(createUserDto));
 	}
 
-	@Post('login')
 	@UseGuards(LocalAuthGuard)
+	@Post('login')
 	login(@Res() res: Response) {
 		return res.send(HttpStatus.OK);
 	}
@@ -38,7 +40,6 @@ export class AuthController {
 	@Get('status')
 	@UseGuards(AuthenticatedGuard)
 	status(@Req() req: Request, @Res() res: Response) {
-		console.log(req.user);
 		res.send(req.user);
 	}
 
