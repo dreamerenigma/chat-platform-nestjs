@@ -2,14 +2,15 @@ import { Exclude } from 'class-transformer';
 import { 
 	Column, 
 	Entity, 
-	JoinColumn, 
-	JoinTable, 
+	JoinColumn,
 	ManyToMany, 
 	OneToMany, 
+	OneToOne, 
 	PrimaryGeneratedColumn, 
 } from 'typeorm';
 import { Group } from './Group';
 import { Message } from './Message';
+import { Profile } from './Profile';
 
 @Entity({ name: 'users' })
 export class User {
@@ -25,7 +26,7 @@ export class User {
 	@Column()
 	lastName: string;
 
-	@Column()
+	@Column({ select: false})
 	@Exclude()
 	password: string;
 
@@ -35,4 +36,8 @@ export class User {
 
 	@ManyToMany(() => Group, (group) => group.users)
 	groups: Group[];
+
+	@OneToOne(() => Profile)
+	@JoinColumn()
+	profile: Profile;
 }

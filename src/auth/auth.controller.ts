@@ -24,8 +24,7 @@ export class AuthController {
 		@Inject(Services.AUTH) private authService: IAuthService, 
 		@Inject(Services.USERS) private userService: IUserService,
 	) {}
-
-	@Throttle(1, 60)
+	
 	@Post('register')
 	async registerUser(@Body() createUserDto: CreateUserDto) {
 		return instanceToPlain(await this.userService.createUser(createUserDto));
