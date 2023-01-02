@@ -10,20 +10,21 @@ import {
 import { Request } from 'express';
 
 export type CreateUserDetails = {
-	email: string;
+	username: string;
 	password: string;
 	firstName: string;
 	lastName: string;
 };
 
 export type ValidateUserDetails = {
-	email: string;
+	username: string;
 	password: string;
 };
 
 export type FindUserParams = Partial<{
 	id: number;
 	email: string;
+	username: string;
 }>;
 
 export type FindUserOptions = Partial<{
