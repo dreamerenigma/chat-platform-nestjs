@@ -3,7 +3,6 @@ import {
 	CreateUserDetails, 
 	FindUserOptions, 
 	FindUserParams,
-
 } from "../utils/types";
 
 export interface IUserService {

@@ -1,3 +1,4 @@
+import { UserNotFoundException } from 'src/users/exceptions/UserNotFound';
 import {
 	Body,
 	Controller,
@@ -14,6 +15,7 @@ import { Routes, Services } from "src/utils/constants";
 import { IUserService } from "./user";
 import { FileInterceptor } from "@nestjs/platform-express/multer";
 import { UserProfileDto } from "./dtos/UserProfile";
+import { UserAlreadyExists } from './exceptions/UserAlreadyExists';
 
 @Controller(Routes.USERS)
 export class UsersController {
@@ -37,5 +39,14 @@ export class UsersController {
 	) {
 		console.log(file);
 		console.log(userProfileDto.about, userProfileDto.username);
+	}
+
+	@Get('check')
+	async checkUsername(@Query('username') username: string) {
+		if(!username) 
+			throw new HttpException('Invalid Query', HttpStatus.BAD_REQUEST);
+		const user = await this.userService.findUser({ username });
+		if (user) throw new UserAlreadyExists();
+		return HttpStatus.OK;
 	}
 }

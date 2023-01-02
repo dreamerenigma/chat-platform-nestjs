@@ -14,11 +14,11 @@ import { IUserService } from './user';
 export class UserService implements IUserService {
 	constructor(
 		@InjectRepository(User) private readonly userRepository: Repository<User>,
-	) {}
+	) { }
 
 	async createUser(userDetails: CreateUserDetails) {
 		const exitingUser = await this.userRepository.findOne({
-			email: userDetails.email,
+			username: userDetails.username,
 		});
 		if (exitingUser)
 			throw new HttpException('User already exists', HttpStatus.CONFLICT);
@@ -49,12 +49,13 @@ export class UserService implements IUserService {
 	}
 
 	searchUsers(query: string) {
-		const statement = '(user.email LIKE :query)';
+		const statement = '(user.username LIKE :query)';
 		return this.userRepository
 			.createQueryBuilder('user')
 			.where(statement, { query: `%${query}%` })
 			.limit(10)
 			.select([
+				'user.username',
 				'user.firstName',
 				'user.lastName',
 				'user.email',

@@ -57,7 +57,7 @@ export class MessagingGateway
 
 	handleDisconnect(socket: AuthenticatedSocket) {
 		console.log('handleDisconnect');
-		console.log(`${socket.user.email} disconnected.`);
+		console.log(`${socket.user.username} disconnected.`);
 		this.sessions.removeUserSocket(socket.user.id);
 	}
 
@@ -67,7 +67,7 @@ export class MessagingGateway
 		@ConnectedSocket() socket: AuthenticatedSocket,
 	) {
 		const group = await this.groupsService.findGroupById(
-			parseInt(data.goupId),
+			parseInt(data.groupId),
 		);
 		if (group) return;
 		const onlineUsers= [];
@@ -325,7 +325,7 @@ export class MessagingGateway
 		const { user } = socket;
 		if (user) {
 			console.log('user is authenticated');
-			console.log(`fetching ${user.email}'s friends`);
+			console.log(`fetching ${user.username}'s friends`);
 			const friends = await this.friendsService.getFriends(user.id);
 			const onlineFriends = friends.filter((friend) => 
 				this.sessions.getUserSocket(

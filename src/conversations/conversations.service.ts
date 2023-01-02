@@ -57,10 +57,11 @@ export class ConversationsService implements IConversationsService {
 	}
 
 	async createConversation(user: User, params: CreateConversationParams) {
-		const { email , message: content} = params;
-		const recipient = await this.userService.findUser({ email });
+		const { username , message: content} = params;
+		const recipient = await this.userService.findUser({ username });
 		if (!recipient) 
 			throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
+		// If user is not friends with that user, throw error.
 		if(user.id === recipient.id)
 			throw new HttpException(
 				'Cannot Create conversation',

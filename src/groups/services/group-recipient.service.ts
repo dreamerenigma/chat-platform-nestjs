@@ -25,7 +25,7 @@ export class GroupRecipientService implements IGroupRecipientService {
 		if (!group) throw new GroupNotFoundException();
 		if (group.owner.id !== params.userId)
 			throw new HttpException('Insuffcient PErmissions', HttpStatus.FORBIDDEN);
-		const recipient = await this.userService.findUser({ email: params.email });
+		const recipient = await this.userService.findUser({ username: params.username });
 		if (!recipient)
 			throw new HttpException('Cannot Add User', HttpStatus.BAD_REQUEST);
 		if (group.creator.id !== params.userId)

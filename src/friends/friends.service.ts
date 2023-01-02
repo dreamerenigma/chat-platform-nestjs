@@ -12,39 +12,33 @@ export class FriendsService implements IFriendsService {
 	constructor(
 		@InjectRepository(Friend)
 		private readonly friendsRepository: Repository<Friend>,
-	) {}
+	) { }
 
 	getFriends(id: number): Promise<Friend[]> {
 		return this.friendsRepository.find({
 			where: [{ sender: { id } }, { receiver: { id } }],
-			relations: [
-				'sender', 
-				'receiver',
-			],
+			relations: ['sender', 'receiver'],
 		});
 	}
 
 	findFriendById(id: number): Promise<Friend> {
 		return this.friendsRepository.findOne(id, {
-			relations: [
-				'sender' , 
-				'receiver',
-			],
+			relations: ['sender', 'receiver'],
 		});
 	}
 
 	async deleteFriend({ id, userId }: DeleteFriendRequestParams) {
 		const friend = await this.findFriendById(id);
-		if(!friend) throw new FriendNotFoundException();
+		if (!friend) throw new FriendNotFoundException();
 		console.log(friend);
-		if(friend.receiver.id !== userId && friend.sender.id !== userId)
+		if (friend.receiver.id !== userId && friend.sender.id !== userId)
 			throw new DeleteFriendException();
 		await this.friendsRepository.delete(id);
 		return friend;
 	}
 
 	isFriends(userOneId: number, userTwoId: number) {
-		return this.friendsRepository.findOne({ 
+		return this.friendsRepository.findOne({
 			where: [
 				{
 					sender: { id: userOneId },
