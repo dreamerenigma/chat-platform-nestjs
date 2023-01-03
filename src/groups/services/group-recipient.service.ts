@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { IUserService } from 'src/users/user';
-import { 
+import { IUserService } from 'src/users/interfaces/user';
+import {
 	AddGroupRecipientParams,
 	CheckUserGroupParams,
 	LeaveGroupParams,
@@ -18,7 +18,7 @@ export class GroupRecipientService implements IGroupRecipientService {
 	constructor(
 		@Inject(Services.USERS) private userService: IUserService,
 		@Inject(Services.GROUPS) private groupService: IGroupService,
-	) {}
+	) { }
 
 	async addGroupRecipient(params: AddGroupRecipientParams) {
 		const group = await this.groupService.findGroupById(params.id);
@@ -47,7 +47,7 @@ export class GroupRecipientService implements IGroupRecipientService {
 	async removeGroupRecipient(params: RemoveGroupRecipientParams) {
 		const { issuerId, removeUserId, id } = params;
 		const userToBeRemoved = await this.userService.findUser({ id: removeUserId });
-		if (!userToBeRemoved) 
+		if (!userToBeRemoved)
 			throw new HttpException('User cannnot be removed', HttpStatus.BAD_REQUEST)
 		const group = await this.groupService.findGroupById(id);
 		if (!group) throw new GroupNotFoundException();
@@ -67,7 +67,7 @@ export class GroupRecipientService implements IGroupRecipientService {
 	async isUserInGroup({ id, userId }: CheckUserGroupParams) {
 		const group = await this.groupService.findGroupById(id);
 		if (!group) throw new GroupNotFoundException();
-		const user =  group.users.find((user) => user.id === userId);
+		const user = group.users.find((user) => user.id === userId);
 		if (!user) throw new GroupParticipantNotFound();
 		return group;
 	}
@@ -78,9 +78,9 @@ export class GroupRecipientService implements IGroupRecipientService {
 		console.log(`Updating Groups`);
 		if (group.owner.id === userId)
 			throw new HttpException(
-			'Cannot leave group as owner', 
-			HttpStatus.BAD_REQUEST,
-		);
+				'Cannot leave group as owner',
+				HttpStatus.BAD_REQUEST,
+			);
 		console.log('New USers in Group agter leaving...');
 		console.log(group.users.filter((user) => user.id !== userId));
 		group.users = group.users.filter((user) => user.id !== userId)

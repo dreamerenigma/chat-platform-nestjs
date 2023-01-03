@@ -1,17 +1,17 @@
-import { 
-	Body, 
-	Controller, 
-	Get, 
-	HttpStatus, 
-	Inject, 
-	Post, 
-	Req, 
-	Res, 
-	UseGuards, 
+import {
+	Body,
+	Controller,
+	Get,
+	HttpStatus,
+	Inject,
+	Post,
+	Req,
+	Res,
+	UseGuards,
 } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 import { Request, Response } from 'express';
-import { IUserService } from 'src/users/user';
+import { IUserService } from 'src/users/interfaces/user';
 import { Routes, Services } from 'src/utils/constants';
 import { IAuthService } from './auth';
 import { CreateUserDto } from './dtos/CreateUser.dto';
@@ -21,10 +21,10 @@ import { Throttle } from '@nestjs/throttler';
 @Controller(Routes.AUTH)
 export class AuthController {
 	constructor(
-		@Inject(Services.AUTH) private authService: IAuthService, 
+		@Inject(Services.AUTH) private authService: IAuthService,
 		@Inject(Services.USERS) private userService: IUserService,
-	) {}
-	
+	) { }
+
 	@Post('register')
 	async registerUser(@Body() createUserDto: CreateUserDto) {
 		return instanceToPlain(await this.userService.createUser(createUserDto));
@@ -43,5 +43,5 @@ export class AuthController {
 	}
 
 	@Post('logout')
-	logout() {}
+	logout() { }
 }

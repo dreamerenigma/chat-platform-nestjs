@@ -1,14 +1,14 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserNotFoundException } from "src/users/exceptions/UserNotFound";
-import { IUserService } from "src/users/user";
+import { IUserService } from "src/users/interfaces/user";
 import { Services } from "src/utils/constants";
 import { Group, User } from "src/utils/typeorm";
-import { 
-	AccessParams, 
-	CreateGroupParams, 
-	FetchGroupsParams, 
-	TransferOwnerParams, 
+import {
+	AccessParams,
+	CreateGroupParams,
+	FetchGroupsParams,
+	TransferOwnerParams,
 } from "src/utils/types";
 import { Repository } from "typeorm";
 import { GroupNotFoundException } from "../exceptions/GroupNotFound";
@@ -22,12 +22,12 @@ export class GroupService implements IGroupService {
 		private readonly groupRepository: Repository<Group>,
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
-	) {}
+	) { }
 
 	async createGroup(params: CreateGroupParams) {
 		const { creator, title } = params;
-		const usersPromise = params.users.map((username) => 
-			this.userService.findUser({ username }), 
+		const usersPromise = params.users.map((username) =>
+			this.userService.findUser({ username }),
 		);
 		const users = (await Promise.all(usersPromise)).filter((user) => user);
 		users.push(creator);
@@ -48,8 +48,8 @@ export class GroupService implements IGroupService {
 	}
 
 	findGroupById(id: number): Promise<Group> {
-		return this.groupRepository.findOne({ 
-			where: { id }, 
+		return this.groupRepository.findOne({
+			where: { id },
 			relations: ['creator', 'users', 'lastMessageSent', 'owner'],
 		});
 	}
@@ -65,13 +65,13 @@ export class GroupService implements IGroupService {
 	}
 
 	async transferGroupOwner({
-		userId, 
-		groupId, 
+		userId,
+		groupId,
 		newOwnerId,
 	}: TransferOwnerParams): Promise<Group> {
 		const group = await this.findGroupById(groupId);
 		if (!group) throw new GroupNotFoundException();
-		if (group.owner.id !== userId) 
+		if (group.owner.id !== userId)
 			throw new GroupOwnerTransferException('Insufficient Permisions');
 		if (group.owner.id === newOwnerId)
 			throw new GroupOwnerTransferException(

@@ -12,7 +12,7 @@ import { IConversationsService } from '../conversations/conversations';
 import { Routes, Services } from '../utils/constants';
 import { User } from '../utils/typeorm';
 import { AuthUser } from 'src/utils/decoratiors';
-import { IUserService } from 'src/users/user';
+import { IUserService } from 'src/users/interfaces/user';
 
 @Controller(Routes.EXISTS)
 export class ExistsController {
@@ -22,7 +22,7 @@ export class ExistsController {
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
 		private readonly events: EventEmitter2,
-	) {}
+	) { }
 
 	@Get('conversations/:recipientId')
 	async checkConversationExists(

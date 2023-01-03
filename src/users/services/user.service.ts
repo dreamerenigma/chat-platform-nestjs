@@ -8,7 +8,7 @@ import {
 	FindUserOptions,
 	FindUserParams,
 } from 'src/utils/types';
-import { IUserService } from './user';
+import { IUserService } from '../interfaces/user';
 
 @Injectable()
 export class UserService implements IUserService {

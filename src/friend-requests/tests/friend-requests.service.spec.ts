@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { IUserService } from 'src/users/user';
+import { IUserService } from 'src/users/interfaces/user';
 import { mockUser } from 'src/__mocks__';
 import { Repository } from 'typeorm';
 import { Services } from '../../utils/constants';
@@ -84,7 +84,7 @@ describe('FriendRequestsService', () => {
 		});
 
 		it('should call createFriendRequst with correct params', async () => {
-			jest.spyOn(friendRequestService, 'findById').mockImplementationOnce(() => 
+			jest.spyOn(friendRequestService, 'findById').mockImplementationOnce(() =>
 				Promise.resolve({
 					sender: {
 						id: 50,

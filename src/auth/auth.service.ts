@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { IUserService } from 'src/users/user';
+import { IUserService } from 'src/users/interfaces/user';
 import { Services } from 'src/utils/constants';
 import { compareHash } from 'src/utils/helpers';
 import { ValidateUserDetails } from 'src/utils/types';
@@ -9,7 +9,7 @@ import { IAuthService } from './auth';
 export class AuthService implements IAuthService {
 	constructor(
 		@Inject(Services.USERS) private readonly userService: IUserService,
-	) {}
+	) { }
 
 	async validateUser(userDetails: ValidateUserDetails) {
 		const user = await this.userService.findUser(
@@ -17,10 +17,10 @@ export class AuthService implements IAuthService {
 			{ selectAll: true },
 		);
 		console.log(user);
-		if (!user) 
-			throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED); 
+		if (!user)
+			throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
 		const isPasswordValid = await compareHash(
-			userDetails.password, 
+			userDetails.password,
 			user.password,
 		);
 		console.log(isPasswordValid);

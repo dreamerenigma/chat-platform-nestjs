@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IUserService } from 'src/users/user';
+import { IUserService } from 'src/users/interfaces/user';
 import { Services } from 'src/utils/constants';
 import { Conversation, Message, User } from 'src/utils/typeorm';
-import { 
-	AccessParams, 
+import {
+	AccessParams,
 	CreateConversationParams,
 } from 'src/utils/types';
 import { Repository } from 'typeorm';
@@ -14,13 +14,13 @@ import { ConversationNotFoundException } from './exceptions/ConversationNotFound
 @Injectable()
 export class ConversationsService implements IConversationsService {
 	constructor(
-		@InjectRepository(Conversation) 
+		@InjectRepository(Conversation)
 		private readonly conversationRepository: Repository<Conversation>,
 		@InjectRepository(Message)
 		private readonly messageRepository: Repository<Message>,
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
-	) {}
+	) { }
 
 	async getConversations(id: number): Promise<Conversation[]> {
 		return this.conversationRepository
@@ -35,7 +35,7 @@ export class ConversationsService implements IConversationsService {
 	}
 
 	async findConversationById(id: number) {
-		return this.conversationRepository.findOne({ 
+		return this.conversationRepository.findOne({
 			where: { id },
 			relations: ['lastMessageSent', 'creator', 'recipient'],
 		});
@@ -57,12 +57,12 @@ export class ConversationsService implements IConversationsService {
 	}
 
 	async createConversation(user: User, params: CreateConversationParams) {
-		const { username , message: content} = params;
+		const { username, message: content } = params;
 		const recipient = await this.userService.findUser({ username });
-		if (!recipient) 
+		if (!recipient)
 			throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
 		// If user is not friends with that user, throw error.
-		if(user.id === recipient.id)
+		if (user.id === recipient.id)
 			throw new HttpException(
 				'Cannot Create conversation',
 				HttpStatus.BAD_REQUEST,
@@ -70,7 +70,7 @@ export class ConversationsService implements IConversationsService {
 		const existingConversation = await this.isCreated(user.id, recipient.id);
 		if (existingConversation)
 			throw new HttpException('Conversation exists', HttpStatus.CONFLICT);
-		const conversation = this.conversationRepository.create({ 
+		const conversation = this.conversationRepository.create({
 			creator: user,
 			recipient: recipient,
 		});

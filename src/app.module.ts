@@ -19,9 +19,9 @@ import { ExistsModule } from './exists/exists.module';
 
 @Module({
 	imports: [
-		AuthModule, 
+		AuthModule,
 		UsersModule,
-		ConfigModule.forRoot({ envFilePath: '.env.development' }), 
+		ConfigModule.forRoot({ envFilePath: '.env.development' }),
 		PassportModule.register({ session: true }),
 		TypeOrmModule.forRoot({
 			type: 'mysql',
@@ -44,7 +44,7 @@ import { ExistsModule } from './exists/exists.module';
 		EventsModule,
 		ExistsModule,
 		ThrottlerModule.forRoot({
-			ttl: 30,
+			ttl: 10,
 			limit: 10,
 		}),
 	],
@@ -56,4 +56,4 @@ import { ExistsModule } from './exists/exists.module';
 		},
 	],
 })
-export class AppModule {}
+export class AppModule { }
