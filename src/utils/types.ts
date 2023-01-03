@@ -194,3 +194,9 @@ export type UpdateUserProfileParams = Partial<{
 	banner: Express.Multer.File;
 	avatar: Express.Multer.File;
 }>;
+
+export type ImagePermission = 'public-read' | 'private';
+export type UploadImageParams = {
+	key: string;
+	file: Express.Multer.File;
+};
