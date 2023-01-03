@@ -1,6 +1,7 @@
+import { User } from 'src/utils/typeorm';
 import { UpdateUserProfileParams } from 'src/utils/types';
-import { UpdateUserProfileDto } from './../dtos/UpdateUserProfile.dto';
 export interface IUserProfile {
-   findProfile();
-   updateProfile(params: UpdateUserProfileParams);
+   createProfile();
+   updateProfile(user: User, params: UpdateUserProfileParams);
+   createProfileOrUpdate(user: User, params: UpdateUserProfileParams);
 }
