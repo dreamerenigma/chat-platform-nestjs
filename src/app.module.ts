@@ -7,14 +7,15 @@ import { UsersModule } from './users/users.module';
 import { ConversationsModule } from './conversations/conversations.module';
 import { MessagesModule } from './messages/messages.module';
 import { GatewayModule } from './gateway/gateway.module';
-import entities, { FriendRequest } from './utils/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import entities, { FriendRequest } from './utils/typeorm';
 import { GroupModule } from './groups/group.module';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { FriendRequestModule } from './friend-requests/friend-requests.module';
 import { FriendsModule } from './friends/friends.module';
 import { EventsModule } from './events/events.module';
+import { ThrottlerBehindProxyGuard } from './utils/throttler';
 import { ExistsModule } from './exists/exists.module';
 
 @Module({
@@ -52,7 +53,7 @@ import { ExistsModule } from './exists/exists.module';
 	providers: [
 		{
 			provide: APP_GUARD,
-			useClass: ThrottlerGuard,
+			useClass: ThrottlerBehindProxyGuard,
 		},
 	],
 })
