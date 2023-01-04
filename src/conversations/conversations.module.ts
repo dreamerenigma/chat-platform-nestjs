@@ -7,9 +7,14 @@ import { Conversation, Message } from 'src/utils/typeorm';
 import { ConversationsController } from './conversations.controller';
 import { ConversationsService } from './conversations.service';
 import { ConversationMiddleware } from './middlewares/conversation.middleware';
+import { FriendsModule } from 'src/friends/friends.module';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Conversation, Message]), UsersModule],
+	imports: [
+		TypeOrmModule.forFeature([Conversation, Message]), 
+		UsersModule,
+		FriendsModule,
+	],
 	controllers: [ConversationsController],
 	providers: [
 		{

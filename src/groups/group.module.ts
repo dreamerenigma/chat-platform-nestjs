@@ -12,9 +12,14 @@ import { GroupMiddleware } from "./middlewares/group.middleware";
 import { GroupMessageService } from "./services/group-messages.service";
 import { GroupRecipientService } from "./services/group-recipient.service";
 import { GroupService } from "./services/group.service";
+import { ImageStorageModule } from "src/image-storage/image-storage.module";
+import { MessageAttachmentsModule } from "src/message-attachments/message-attachments.module";
 
 @Module({
-	imports: [UsersModule, TypeOrmModule.forFeature([Group, GroupMessage])],
+	imports: [
+		UsersModule, 
+		TypeOrmModule.forFeature([Group, GroupMessage]),
+	],
 	controllers: [
 		GroupController, 
 		GroupMessageController, 

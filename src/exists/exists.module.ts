@@ -8,4 +8,4 @@ import { ExistsController } from './exists.controller';
 	controllers: [ExistsController],
 	providers: [],
 })
-export class ExistsModule {}
+export class ExistsModule { }

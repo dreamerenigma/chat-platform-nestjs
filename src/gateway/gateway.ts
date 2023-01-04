@@ -14,15 +14,20 @@ import { IConversationsService } from 'src/conversations/conversations';
 import { IGroupService } from '../groups/interfaces/group';
 import { Services } from 'src/utils/constants';
 import { AuthenticatedSocket } from 'src/utils/interfaces';
-import { Conversation, Group, GroupMessage, Message } from 'src/utils/typeorm';
+import { 
+	Conversation, 
+	Group, 
+	GroupMessage, 
+	Message,
+} from 'src/utils/typeorm';
 import { 
 	AddGroupUserResponse,
 	CreateGroupMessageResponse, 
 	CreateMessageResponse, 
 	RemoveGroupUserResponse,
 } from 'src/utils/types';
-import { IGatewaySessionManager } from './gateway.session';
 import { IFriendsService } from 'src/friends/friends';
+import { IGatewaySessionManager } from './gateway.session';
 
 @WebSocketGateway({
 	cors: {
@@ -135,9 +140,6 @@ export class MessagingGateway
 		@MessageBody() data: any,
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
-		console.log('onTypingStart');
-		console.log(data.conversationId);
-		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('onTypingStart');
 	}
 
@@ -146,15 +148,11 @@ export class MessagingGateway
 		@MessageBody() data: any,
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
-		console.log('onTypingStop');
-		console.log(data.conversationId);
-		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('onTypingStop');
 	}
 
 	@OnEvent('message.create')
 	handleMessageCreateEvent(payload: CreateMessageResponse) {
-		console.log('Inside message.create');
 		const { 
 			author, 
 			conversation: { creator, recipient },
@@ -172,16 +170,13 @@ export class MessagingGateway
 
 	@OnEvent('conversation.create')
 	handleConversationCreateEvent(payload: Conversation) {
-		console.log('Inside conversation.create');
 		const recipientSocket = this.sessions.getUserSocket(payload.recipient.id);
 		if (recipientSocket) recipientSocket.emit('onConversation', payload);
 	}
 
 	@OnEvent('message.delete')
 	async handleMessageDelete(payload) {
-		console.log('Inside message.delete');
-		console.log(payload);
-		const conversation = await this.conversationService.findConversationById(
+		const conversation = await this.conversationService.findById(
 			payload.conversationId,
 		);
 		if (!conversation) return;
@@ -199,7 +194,6 @@ export class MessagingGateway
 			author,
 			conversation: { creator, recipient },
 		} = message;
-		console.log(message);
 		const recipientSocket = 
 			author.id === creator.id
 				? this.sessions.getUserSocket(recipient.id)
@@ -210,7 +204,6 @@ export class MessagingGateway
 	@OnEvent('group.message.create')
 	async handleGroupMessageCreate(payload: CreateGroupMessageResponse) {
 		const { id } = payload.group;
-		console.log('Inside group.message.create');
 		this.server.to(`group-${id}`).emit('onGroupMessage', payload);
 	}
 

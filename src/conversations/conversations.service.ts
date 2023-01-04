@@ -34,10 +34,14 @@ export class ConversationsService implements IConversationsService {
 			.getMany();
 	}
 
-	async findConversationById(id: number) {
+	async findById(id: number) {
 		return this.conversationRepository.findOne({
 			where: { id },
-			relations: ['lastMessageSent', 'creator', 'recipient'],
+			relations: [
+				'lastMessageSent', 
+				'creator', 
+				'recipient',
+			],
 		});
 	}
 
@@ -84,7 +88,7 @@ export class ConversationsService implements IConversationsService {
 	}
 
 	async hasAccess({ id, userId }: AccessParams) {
-		const conversation = await this.findConversationById(id);
+		const conversation = await this.findById(id);
 		if (!conversation) throw new ConversationNotFoundException();
 		return (
 			conversation.creator.id === userId || conversation.recipient.id === userId
