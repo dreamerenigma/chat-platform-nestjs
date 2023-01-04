@@ -44,7 +44,7 @@ describe('FriendRequestController', () => {
 
 	it('should call createFriendRequest with correct params', async () => {
 		await controller.createFriendRequest(mockUser, {
-			email: 'verclocker1@gmail.com'
+			email: 'verclocker1@gmail.com',
 		});
 		expect(friendRequestService.create).toHaveBeenCalledWith({
 			user: mockUser,

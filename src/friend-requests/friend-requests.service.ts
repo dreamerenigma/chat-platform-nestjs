@@ -90,6 +90,7 @@ export class FriendRequestService implements IFriendRequestService {
 
 	async reject({ id, userId }: CancelFriendRequestParams) {
 		const friendRequest = await this.findById(id);
+		if (!friendRequest) throw new FriendRequestNotFoundException();
 		if (friendRequest.status === 'accepted')
 			throw new FriendRequestNotFoundException();
 		if (friendRequest.receiver.id !== userId)

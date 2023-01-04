@@ -34,7 +34,7 @@ export class FriendRequestController {
 	@Post()
 	async createFriendRequest(
 		@AuthUser() user: User, 
-		@Body() {username }: CreateFriendDto,
+		@Body() { username }: CreateFriendDto,
 	) {
 		const params = { user, username };
 		const friendRequest = await this.friendRequestService.create(params);

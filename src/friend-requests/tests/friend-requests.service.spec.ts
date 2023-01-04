@@ -8,7 +8,6 @@ import { Friend, FriendRequest } from '../../utils/typeorm';
 import { FriendRequestException } from '../exceptions/FriendRequest';
 import { FriendRequestNotFoundException } from '../exceptions/FriendRequestNotFound';
 import { IFriendRequestService } from '../friend-requests';
-import { FriendRequestController } from '../friend-requests.controller';
 import { FriendRequestService } from '../friend-requests.service';
 
 describe('FriendRequestsService', () => {
@@ -83,14 +82,10 @@ describe('FriendRequestsService', () => {
 			).rejects.toThrow(FriendRequestNotFoundException);
 		});
 
-		it('should call createFriendRequst with correct params', async () => {
-			jest.spyOn(friendRequestService, 'findById').mockImplementationOnce(() =>
-				Promise.resolve({
-					sender: {
-						id: 50,
-					},
-				} as FriendRequest),
-			);
+		it('should throw error when sender.id not equal to the user id', async () => {
+			jest
+				.spyOn(friendRequestService, 'findById')
+				.mockImplementationOnce(() => Promise.resolve(mockFriendRequest));
 			expect(
 				friendRequestService.cancel({ id: 500, userId: 30 }),
 			).rejects.toThrow(FriendRequestException);
