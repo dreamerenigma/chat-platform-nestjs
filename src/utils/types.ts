@@ -1,4 +1,3 @@
-import { FindOperator } from "typeorm/find-options/FindOperator";
 import { 
 	Conversation, 
 	Friend,
@@ -6,6 +5,7 @@ import {
 	Group, 
 	GroupMessage, 
 	Message, 
+	MessageAttachment, 
 	User,
 } from "./typeorm";
 import { Request } from 'express';
@@ -52,7 +52,8 @@ export type CreateParticipantParams = {
 };
 
 export type CreateMessageParams = {
-	content: string;
+	content?: string;
+	attachments?: Attachment[];
 	conversationId: number;
 	user: User;
 };
@@ -199,4 +200,11 @@ export type ImagePermission = 'public-read' | 'private';
 export type UploadImageParams = {
 	key: string;
 	file: Express.Multer.File;
+};
+
+export interface Attachment extends Express.Multer.File {}
+
+export type UploadMessageAttachmentParams = {
+	file: Attachment;
+	messageAttachment: MessageAttachment;
 };

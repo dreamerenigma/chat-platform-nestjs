@@ -1,11 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Services } from "src/utils/constants";
-import { IImageStorageService  } from './image-storage';
+import { IImageStorageService } from './image-storage';
 import { S3 } from '@aws-sdk/client-s3';
-import { UploadImageParams } from "src/utils/types";
+import { UploadImageParams, UploadMessageAttachmentParams } from "src/utils/types";
 
 @Injectable()
-export class ImageStorageService implements IImageStorageService  {
+export class ImageStorageService implements IImageStorageService {
    constructor(
       @Inject(Services.SPACES_CLIENT)
       private readonly spacesClient: S3,
@@ -21,15 +21,14 @@ export class ImageStorageService implements IImageStorageService  {
       });
    }
 
-   uploadProfilePicture() {
-      throw new Error("Method not implemented.");
-   }
-
-   deleteBanner() {
-      throw new Error("Method not implemented.");
-   }
-   
-   deleteProfilePicture() {
-      throw new Error("Method not implemented.");
+   async uploadMessageAttachment(params: UploadMessageAttachmentParams) {
+      await this.spacesClient.putObject({
+         Bucket: 'dialogchat',
+         Key: params.messageAttachment.key,
+         Body: params.file.buffer,
+         ACL: 'public-read',
+         ContentType: params.file.mimetype,
+      });
+      return params.messageAttachment;
    }
 }
