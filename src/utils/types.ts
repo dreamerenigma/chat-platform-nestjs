@@ -202,6 +202,7 @@ export type UploadImageParams = {
 	file: Express.Multer.File;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Attachment extends Express.Multer.File {}
 
 export type UploadMessageAttachmentParams = {
