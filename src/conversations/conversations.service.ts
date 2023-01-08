@@ -1,3 +1,4 @@
+import { GetConversationMessagesParams, UpdateConversationParams } from './../utils/types';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserService } from 'src/users/interfaces/user';
@@ -40,9 +41,9 @@ export class ConversationsService implements IConversationsService {
 		return this.conversationRepository.findOne({
 			where: { id },
 			relations: [
-				'lastMessageSent', 
 				'creator', 
 				'recipient',
+				'lastMessageSent', 
 				'creator.profile',
 				'recipient.profile',
 			],
@@ -97,5 +98,28 @@ export class ConversationsService implements IConversationsService {
 		return (
 			conversation.creator.id === userId || conversation.recipient.id === userId
 		);
+	}
+
+	save(conversation: Conversation): Promise<Conversation> {
+		return this.conversationRepository.save(conversation);
+	}
+
+	getMessages({ 
+		id, 
+		limit,
+	}: GetConversationMessagesParams): Promise<Conversation> {
+		return this.conversationRepository
+			.createQueryBuilder('conversation')
+			.where('id = :id', { id })
+			.leftJoinAndSelect('conversation.lastMessagesent', 'lastMessageSent')
+			.leftJoinAndSelect('conversation.messages', 'message')
+			.where('conversation.id = :id', { id })
+			.orderBy('message.createAt', 'DESC')
+			.limit(limit)
+			.getOne();
+	}
+
+	update({ id, lastMessageSent }: UpdateConversationParams) {
+		return this.conversationRepository.update(id, { lastMessageSent });
 	}
 }

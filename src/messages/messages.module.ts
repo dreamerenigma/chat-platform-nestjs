@@ -6,12 +6,14 @@ import { MessageController } from './message.controller';
 import { MessageService } from './message.service';
 import { ImageStorageModule } from 'src/image-storage/image-storage.module';
 import { MessageAttachmentsModule } from 'src/message-attachments/message-attachments.module';
+import { ConversationsModule } from 'src/conversations/conversations.module';
 
 @Module({
 	imports: [
 		TypeOrmModule.forFeature([Message, Conversation]),
 		ImageStorageModule,
 		MessageAttachmentsModule,
+		ConversationsModule,
 	],
 	controllers: [MessageController],
 	providers: [
