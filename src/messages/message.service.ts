@@ -13,6 +13,9 @@ import { IMessageService } from './message';
 import { IMessageAttachmentsService } from 'src/message-attachments/message-attachments';
 import { IConversationsService } from 'src/conversations/conversations';
 import { CannotCreateMessageException } from './exceptions/CannotCreateMessage';
+import { buildFindMessageParams } from 'src/utils/builder';
+import { InjectRepository } from '@nestjs/typeorm';
+import { instanceToPlain } from 'class-transformer';
 
 @Injectable()
 export class MessageService implements IMessageService {
