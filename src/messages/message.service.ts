@@ -2,8 +2,6 @@ import { CannotDeleteMessage } from './exceptions/CannotDeleteMessage';
 import { ConversationNotFoundException } from './../conversations/exceptions/ConversationNotFound';
 import { Services } from 'src/utils/constants';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { instanceToPlain } from 'class-transformer';
 import { Conversation, Message, User } from 'src/utils/typeorm';
 import {
 	CreateMessageParams,
@@ -60,11 +58,8 @@ export class MessageService implements IMessageService {
 		const msgParams = { id: conversationId, limit: 5 };
 		const conversation = await this.conversationService.getMessages(msgParams);
 		if (!conversation) throw new ConversationNotFoundException();
-		const message = await this.messageRepository.findOne({
-			id: params.messageId,
-			author: { id: params.userId },
-			conversation: { id: params.conversationId },
-		});
+		const findMessageParams = buildFindMessageParams(params);
+		const message = await this.messageRepository.findOne(findMessageParams);
 		if (!message) throw new CannotDeleteMessage();
 		if (conversation.lastMessageSent.id !== message.id)
 			return this.messageRepository.delete({ id: message.id });
