@@ -28,6 +28,8 @@ export class ConversationsService implements IConversationsService {
 			.leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
 			.leftJoinAndSelect('conversation.creator', 'creator')
 			.leftJoinAndSelect('conversation.recipient', 'recipient')
+			.leftJoinAndSelect('creator.profile', 'creaytorProfile')
+			.leftJoinAndSelect('recipient.profile', 'recipientProfile')
 			.where('creator.id = :id', { id })
 			.orWhere('recipient.id = :id', { id })
 			.orderBy('conversation.lastMessageSentAt', 'DESC')
@@ -41,6 +43,8 @@ export class ConversationsService implements IConversationsService {
 				'lastMessageSent', 
 				'creator', 
 				'recipient',
+				'creator.profile',
+				'recipient.profile',
 			],
 		});
 	}
