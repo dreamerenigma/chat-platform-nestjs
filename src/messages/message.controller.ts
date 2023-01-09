@@ -35,7 +35,7 @@ export class MessageController {
 		FileFieldsInterceptor([
 			{
 				name: 'attachments',
-				maxCount: 10,
+				maxCount: 5,
 			},
 		]),
 	)

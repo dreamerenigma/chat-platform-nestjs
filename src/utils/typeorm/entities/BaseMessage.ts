@@ -2,7 +2,7 @@ import {
 	Column, 
 	CreateDateColumn, 
 	ManyToOne, 
-	PrimaryGeneratedColumn 
+	PrimaryGeneratedColumn, 
 } from "typeorm";
 import { User } from "./User";
 

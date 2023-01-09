@@ -18,6 +18,7 @@ import { MessageAttachmentsModule } from "src/message-attachments/message-attach
 @Module({
 	imports: [
 		UsersModule, 
+		MessageAttachmentsModule,
 		TypeOrmModule.forFeature([Group, GroupMessage]),
 	],
 	controllers: [

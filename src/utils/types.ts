@@ -1,3 +1,4 @@
+import { GroupMessageAttachment } from './typeorm/entities/GroupMessageAttachment';
 import { 
 	Conversation, 
 	Friend,
@@ -100,9 +101,10 @@ export type FetchGroupsParams = {
 };
 
 export type CreateGroupMessageParams = {
-	groupId: number;
-	content: string;
 	author: User;
+	attachments?: Attachment[];
+	content: string;
+	groupId: number;
 };
 
 export type CreateGroupMessageResponse = {
@@ -214,6 +216,11 @@ export interface Attachment extends Express.Multer.File {}
 export type UploadMessageAttachmentParams = {
 	file: Attachment;
 	messageAttachment: MessageAttachment;
+};
+
+export type UploadGroupMessageAttachmentParams = {
+	file: Attachment;
+	messageAttachment: GroupMessageAttachment;
 };
 
 export type GetConversationMessagesParams = {

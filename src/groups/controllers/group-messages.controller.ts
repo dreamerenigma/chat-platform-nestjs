@@ -7,16 +7,21 @@ import {
 	Param, 
 	ParseIntPipe, 
 	Patch, 
-	Post, 
+	Post,
+	UploadedFile,
+	UseInterceptors, 
 } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
+import { SkipThrottle, Throttle } from "@nestjs/throttler";
 import { CreateMessageDto } from "src/messages/dtos/CreateMessage.dto";
 import { EditMessageDto } from "src/messages/dtos/EditMessage.dto";
+import { EmptyMessageException } from "src/messages/exceptions/EmptyMessage";
 import { Routes, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decoratiors";
 import { User } from "src/utils/typeorm";
+import { Attachment } from "src/utils/types";
 import { IGroupMessageService } from "../interfaces/group-messages";
-import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
 @Controller(Routes.GROUP_MESSAGES)
 export class GroupMessageController {
@@ -27,18 +32,25 @@ export class GroupMessageController {
 	) {}
 
 	@Throttle(5, 10)
+	@UseInterceptors(
+		FileFieldsInterceptor([
+			{
+				name: 'attachments',
+				maxCount: 5,
+			},
+		]),
+	)
 	@Post()
 	async createGroupMessage(
-		@AuthUser() user: User, 
+		@AuthUser() user: User,
+		@UploadedFile() { attachments }: { attachments: Attachment[] },
 		@Param('id', ParseIntPipe) id: number,
 		@Body() { content }: CreateMessageDto,
 	) {
 		console.log(`Creating Group Message for ${id}`);
-		const response = await this.groupMessageService.createGroupMessage({ 
-			author: user, 
-			groupId: id, 
-			content,
-		});
+		if (!attachments && !content) throw new EmptyMessageException();
+		const params = { groupId: id, author: user, content, attachments };
+		const response = await this.groupMessageService.createGroupMessage(params);
 		this.eventEmitter.emit('group.message.create', response);
 		return;
 	}
@@ -75,6 +87,7 @@ export class GroupMessageController {
 	}
 
 	@Patch(':messageId')
+	@SkipThrottle()
 	async editGroupMessage(
 		@AuthUser() { id: userId }: User,
 		@Param('id', ParseIntPipe) groupId: number,
