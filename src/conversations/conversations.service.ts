@@ -1,3 +1,7 @@
+import { UserNotFoundException } from 'src/users/exceptions/UserNotFound';
+import { ConversationExistsException } from './exceptions/ConversationExists';
+import { CreateConversationException } from './exceptions/CreateConversation';
+import { CreateConversationDto } from 'src/auth/dtos/CreateConversation.dto';
 import { GetConversationMessagesParams, UpdateConversationParams } from './../utils/types';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -43,9 +47,9 @@ export class ConversationsService implements IConversationsService {
 			relations: [
 				'creator', 
 				'recipient',
-				'lastMessageSent', 
 				'creator.profile',
 				'recipient.profile',
+				'lastMessageSent', 
 			],
 		});
 	}
@@ -68,17 +72,14 @@ export class ConversationsService implements IConversationsService {
 	async createConversation(user: User, params: CreateConversationParams) {
 		const { username, message: content } = params;
 		const recipient = await this.userService.findUser({ username });
-		if (!recipient)
-			throw new HttpException('Recipient Not Found', HttpStatus.BAD_REQUEST);
+		if (!recipient) throw new UserNotFoundException();
 		// If user is not friends with that user, throw error.
-		if (user.id === recipient.id)
-			throw new HttpException(
-				'Cannot Create conversation',
-				HttpStatus.BAD_REQUEST,
-			);
-		const existingConversation = await this.isCreated(user.id, recipient.id);
-		if (existingConversation)
-			throw new HttpException('Conversation exists', HttpStatus.CONFLICT);
+		if (user.id === recipient.id) {
+			const error = 'Cannot create Conversation with yourself';
+			throw new CreateConversationException(error);
+		}
+		const exist = await this.isCreated(user.id, recipient.id);
+		if (exist) throw new ConversationExistsException();
 		const conversation = this.conversationRepository.create({
 			creator: user,
 			recipient: recipient,
@@ -88,7 +89,7 @@ export class ConversationsService implements IConversationsService {
 		);
 		const messageParams = { content, conversation, author: user };
 		const message = this.messageRepository.create(messageParams);
-		const savedMessage = await this.messageRepository.save(message);
+		await this.messageRepository.save(message);
 		return savedConversation;
 	}
 
