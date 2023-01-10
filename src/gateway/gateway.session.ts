@@ -5,7 +5,7 @@ export interface IGatewaySessionManager {
 	getUserSocket(id: number): AuthenticatedSocket;
 	setUserSocket(id: number, socket: AuthenticatedSocket): void;
 	removeUserSocket(id: number): void;
-	getSockets(): Map<number, AuthenticatedSocket>
+	getSockets(): Map<number, AuthenticatedSocket>;
 }
 
 @Injectable()

@@ -4,6 +4,5 @@ export class CreateGroupDto {
 	@IsString({ each: true })
 	@ArrayNotEmpty()
 	users: string[];
-
 	title: string;
 }

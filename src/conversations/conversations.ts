@@ -9,7 +9,7 @@ import {
 export interface IConversationsService {
 	createConversation(
 		user: User, 
-		conversationParams: CreateConversationParams
+		conversationParams: CreateConversationParams,
 	): Promise<Conversation>;
 	getConversations(id: number): Promise<Conversation[]>;
 	findById(id: number): Promise<Conversation | undefined>;

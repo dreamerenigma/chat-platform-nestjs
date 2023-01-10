@@ -4,7 +4,7 @@ import {
 	DeleteDateColumn, 
 	Entity, 
 	Index, 
-	PrimaryColumn 
+	PrimaryColumn, 
 } from 'typeorm';
 
 @Entity({ name: 'sessions' })
