@@ -56,7 +56,7 @@ export class GroupMessageService implements IGroupMessageService {
 	getGroupMessages(id: number): Promise<GroupMessage[]> {
 		return this.groupMessageRepository.find({
 			where: { group: { id } },
-			relations: ['author', 'attachments'],
+			relations: ['author', 'attachments', 'author.profile'],
 			order: {
 				createdAt: 'DESC',
 			},
