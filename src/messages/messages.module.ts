@@ -7,6 +7,7 @@ import { MessageService } from './message.service';
 import { ImageStorageModule } from 'src/image-storage/image-storage.module';
 import { MessageAttachmentsModule } from 'src/message-attachments/message-attachments.module';
 import { ConversationsModule } from 'src/conversations/conversations.module';
+import { FriendsModule } from '../friends/friends.module';
 
 @Module({
 	imports: [
@@ -14,6 +15,7 @@ import { ConversationsModule } from 'src/conversations/conversations.module';
 		ImageStorageModule,
 		MessageAttachmentsModule,
 		ConversationsModule,
+		FriendsModule,
 	],
 	controllers: [MessageController],
 	providers: [

@@ -12,7 +12,7 @@ export class FriendsService implements IFriendsService {
 	constructor(
 		@InjectRepository(Friend)
 		private readonly friendsRepository: Repository<Friend>,
-	) { }
+	) {}
 
 	getFriends(id: number): Promise<Friend[]> {
 		return this.friendsRepository.find({

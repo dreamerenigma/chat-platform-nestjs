@@ -1,3 +1,4 @@
+import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound';
 import { CannotDeleteMessage } from './exceptions/CannotDeleteMessage';
 import { ConversationNotFoundException } from './../conversations/exceptions/ConversationNotFound';
 import { Services } from 'src/utils/constants';
@@ -16,6 +17,7 @@ import { CannotCreateMessageException } from './exceptions/CannotCreateMessage';
 import { buildFindMessageParams } from 'src/utils/builder';
 import { InjectRepository } from '@nestjs/typeorm';
 import { instanceToPlain } from 'class-transformer';
+import { IFriendsService } from '../friends/friends';
 
 @Injectable()
 export class MessageService implements IMessageService {
@@ -26,12 +28,16 @@ export class MessageService implements IMessageService {
 		private readonly conversationService: IConversationsService,
 		@Inject(Services.MESSAGE_ATTACHMENTS)
 		private readonly messageAttachmentsService: IMessageAttachmentsService,
-	) { }
+		@Inject(Services.FRIENDS_SERVICE)
+		private readonly friendsService: IFriendsService,
+	) {}
 	async createMessage(params: CreateMessageParams) {
 		const { user, content, id } = params;
 		const conversation = await this.conversationService.findById(id,);
 		if (!conversation) throw new ConversationNotFoundException();
 		const { creator, recipient } = conversation;
+		const isFriends = await this.friendsService.isFriends(creator.id, recipient.id);
+		if (!isFriends) throw new FriendNotFoundException();
 		if (creator.id !== user.id && recipient.id !== user.id)
 			throw new CannotCreateMessageException();
 		const message = this.messageRepository.create({
