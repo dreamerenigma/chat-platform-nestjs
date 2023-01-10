@@ -20,6 +20,8 @@ export class FriendsService implements IFriendsService {
 			relations: [
 				'sender', 
 				'receiver',
+				'sender.profile',
+				'receiver.profile',
 			],
 		});
 	}
