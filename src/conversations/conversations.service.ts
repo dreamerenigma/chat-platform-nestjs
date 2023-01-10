@@ -1,3 +1,4 @@
+import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound';
 import { UserNotFoundException } from 'src/users/exceptions/UserNotFound';
 import { ConversationExistsException } from './exceptions/ConversationExists';
 import { CreateConversationException } from './exceptions/CreateConversation';
@@ -15,6 +16,7 @@ import {
 import { Repository } from 'typeorm';
 import { IConversationsService } from './conversations';
 import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
+import { IFriendsService } from '../friends/friends';
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
@@ -25,7 +27,9 @@ export class ConversationsService implements IConversationsService {
 		private readonly messageRepository: Repository<Message>,
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
-	) { }
+		@Inject(Services.FRIENDS_SERVICE)
+		private readonly friendsService: IFriendsService,
+	) {}
 
 	async getConversations(id: number): Promise<Conversation[]> {
 		return this.conversationRepository
@@ -69,28 +73,21 @@ export class ConversationsService implements IConversationsService {
 		});
 	}
 
-	async createConversation(user: User, params: CreateConversationParams) {
+	async createConversation(creator: User, params: CreateConversationParams) {
 		const { username, message: content } = params;
 		const recipient = await this.userService.findUser({ username });
 		if (!recipient) throw new UserNotFoundException();
-		// If user is not friends with that user, throw error.
-		if (user.id === recipient.id) {
-			const error = 'Cannot create Conversation with yourself';
-			throw new CreateConversationException(error);
-		}
-		const exist = await this.isCreated(user.id, recipient.id);
+		if (creator.id === recipient.id) 
+			throw new CreateConversationException('Cannot create Conversation with yourself');
+		const isFriends = await this.friendsService.isFriends(creator.id, recipient.id);
+		if (!isFriends) throw new FriendNotFoundException();
+		const exist = await this.isCreated(creator.id, recipient.id);
 		if (exist) throw new ConversationExistsException();
-		const conversation = this.conversationRepository.create({
-			creator: user,
-			recipient: recipient,
-		});
-		const savedConversation = await this.conversationRepository.save(
-			conversation,
-		);
-		const messageParams = { content, conversation, author: user };
-		const message = this.messageRepository.create(messageParams);
-		await this.messageRepository.save(message);
-		return savedConversation;
+		const newConversation = this.conversationRepository.create({ creator, recipient });
+		const conversation = await this.conversationRepository.create(newConversation);
+		const NewMessage = this.messageRepository.create({ content, conversation, author: creator });
+		await this.messageRepository.save(NewMessage);
+		return conversation;
 	}
 
 	async hasAccess({ id, userId }: AccessParams) {
