@@ -48,7 +48,7 @@ export class MessageService implements IMessageService {
 		return { message: savedMessage, conversation: updatedConversation };
 	}
 
-	getMessagesByConversationId(conversationId: number): Promise<Message[]> {
+	getMessages(conversationId: number): Promise<Message[]> {
 		return this.messageRepository.find({
 			relations: ['author', 'attachments'],
 			where: { conversation: { id: conversationId } },
