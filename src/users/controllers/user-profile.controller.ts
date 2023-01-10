@@ -1,14 +1,14 @@
-import { 
+import {
    Body,
-   Controller, 
-   Inject, 
-   Patch, 
-   UploadedFiles, 
-   UseInterceptors, 
+   Controller,
+   Inject,
+   Patch,
+   UploadedFiles,
+   UseInterceptors,
 } from "@nestjs/common";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { Routes, Services, UserProfileFileFields } from "src/utils/constants";
-import { AuthUser } from 'src/utils/decoratiors';
+import { AuthUser } from 'src/utils/decorators';
 import { User } from 'src/utils/typeorm';
 import { UpdateUserProfileParams, UserProfileFiles } from '../../utils/types';
 import { UpdateUserProfileDto } from '../dtos/UpdateUserProfile.dto';
@@ -19,13 +19,13 @@ export class UserProfilesController {
    constructor(
       @Inject(Services.USERS_PROFILES)
       private readonly userProfileService: IUserProfile,
-   ) {}
+   ) { }
 
    @Patch()
    @UseInterceptors(FileFieldsInterceptor(UserProfileFileFields))
    async updateUserProfile(
       @AuthUser() user: User,
-      @UploadedFiles() 
+      @UploadedFiles()
       files: UserProfileFiles,
       @Body() updateUserProfileDto: UpdateUserProfileDto,
    ) {

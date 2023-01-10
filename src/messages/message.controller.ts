@@ -1,18 +1,18 @@
-import { 
-	Body, 
-	Controller, 
-	Delete, 
-	Get, 
-	Inject, 
-	Param, 
-	ParseIntPipe, 
-	Patch, 
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Inject,
+	Param,
+	ParseIntPipe,
+	Patch,
 	Post,
 	UploadedFile,
 	UseInterceptors,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
-import { AuthUser } from 'src/utils/decoratiors';
+import { AuthUser } from 'src/utils/decorators';
 import { User } from 'src/utils/typeorm';
 import { CreateMessageDto } from './dtos/CreateMessage.dto';
 import { IMessageService } from './message';
@@ -24,11 +24,11 @@ import { EmptyMessageException } from './exceptions/EmptyMessage';
 import { Attachment } from 'src/utils/types';
 
 @Controller(Routes.MESSAGES)
-export class MessageController { 
+export class MessageController {
 	constructor(
 		@Inject(Services.MESSAGES) private readonly messageService: IMessageService,
 		private eventEmitter: EventEmitter2,
-	) {}
+	) { }
 
 	@Throttle(5, 10)
 	@UseInterceptors(
@@ -44,7 +44,7 @@ export class MessageController {
 		@AuthUser() user: User,
 		@UploadedFile() { attachments }: { attachments: Attachment[] },
 		@Param('id', ParseIntPipe) id: number,
-		@Body() 
+		@Body()
 		{ content }: CreateMessageDto,
 	) {
 		if (!attachments && !content) throw new EmptyMessageException();
@@ -60,8 +60,7 @@ export class MessageController {
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) id: number,
 	) {
-		console.log(id);
-		const messages = await this.messageService.getMessagesByConversationId(id);
+		const messages = await this.messageService.getMessages(id);
 		return { id, messages };
 	}
 

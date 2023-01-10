@@ -1,16 +1,16 @@
-import { 
-	Body, 
+import {
+	Body,
 	Controller,
 	Delete,
 	Get,
-	Inject, 
+	Inject,
 	Param,
-	ParseIntPipe, 
+	ParseIntPipe,
 	Patch,
-	Post, 
+	Post,
 } from "@nestjs/common";
 import { Routes, ServerEvents, Services } from '../utils/constants';
-import { AuthUser } from "../utils/decoratiors";
+import { AuthUser } from "../utils/decorators";
 import { User } from "../utils/typeorm";
 import { CreateFriendDto } from "./dtos/CreateFriend.dto";
 import { IFriendRequestService } from "./friend-requests";
@@ -20,10 +20,10 @@ import { Throttle } from "@nestjs/throttler";
 @Controller(Routes.FRIEND_REQUESTS)
 export class FriendRequestController {
 	constructor(
-		@Inject(Services.FRIENDS_REQUESTS_SERVICE) 
+		@Inject(Services.FRIENDS_REQUESTS_SERVICE)
 		private readonly friendRequestService: IFriendRequestService,
 		private event: EventEmitter2,
-	) {}
+	) { }
 
 	@Get()
 	getFriendRequests(@AuthUser() user: User) {
@@ -33,7 +33,7 @@ export class FriendRequestController {
 	@Throttle(3, 10)
 	@Post()
 	async createFriendRequest(
-		@AuthUser() user: User, 
+		@AuthUser() user: User,
 		@Body() { username }: CreateFriendDto,
 	) {
 		const params = { user, username };
@@ -49,7 +49,7 @@ export class FriendRequestController {
 		@Param('id', ParseIntPipe) id: number,
 	) {
 		const response = await this.friendRequestService.accept({ id, userId });
-		this.event.emit(ServerEvents.FRIEND_REQUEST_ACCEPTED , response);
+		this.event.emit(ServerEvents.FRIEND_REQUEST_ACCEPTED, response);
 		return response;
 	}
 

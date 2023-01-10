@@ -17,7 +17,7 @@ export class UserProfileService implements IUserProfile {
       private readonly userRepository: Repository<User>,
       @Inject(Services.IMAGE_UPLOAD_SERVICE)
       private readonly imageStorageService: IImageStorageService,
-   ) { }
+   ) {}
 
    createProfile() {
       const newProfile = this.profileRespository.create();

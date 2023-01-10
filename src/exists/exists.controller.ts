@@ -11,7 +11,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 import { IConversationsService } from '../conversations/conversations';
 import { IUserService } from 'src/users/interfaces/user';
 import { Routes, Services } from '../utils/constants';
-import { AuthUser } from 'src/utils/decoratiors';
+import { AuthUser } from 'src/utils/decorators';
 import { User } from '../utils/typeorm';
 
 @Controller(Routes.EXISTS)

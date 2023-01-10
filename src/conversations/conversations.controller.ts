@@ -1,15 +1,15 @@
-import { 
-	Body, 
+import {
+	Body,
 	Controller,
-	Get, 
-	Inject, 
-	Param, 
-	Post, 
+	Get,
+	Inject,
+	Param,
+	Post,
 	UseGuards,
 } from '@nestjs/common';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
-import { AuthUser } from 'src/utils/decoratiors';
+import { AuthUser } from 'src/utils/decorators';
 import { User } from 'src/utils/typeorm';
 import { IConversationsService } from './conversations';
 import { CreateConversationDto } from 'src/auth/dtos/CreateConversation.dto';
@@ -20,11 +20,11 @@ import { SkipThrottle } from '@nestjs/throttler';
 @Controller(Routes.CONVERSATIONS)
 @UseGuards(AuthenticatedGuard)
 export class ConversationsController {
-	constructor( 
+	constructor(
 		@Inject(Services.CONVERSATIONS)
 		private readonly conversationsService: IConversationsService,
 		private readonly events: EventEmitter2,
-	) {}
+	) { }
 	@Get('test/endpoint/check')
 	test() {
 		return;
@@ -37,11 +37,11 @@ export class ConversationsController {
 	) {
 		console.log('createConversation');
 		const conversation = await this.conversationsService.createConversation(
-			user, 
+			user,
 			createConversationPayload,
 		);
 		this.events.emit('conversation.create', conversation);
-		return conversation; 
+		return conversation;
 	}
 
 	@Get()

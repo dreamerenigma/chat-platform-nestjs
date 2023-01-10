@@ -1,13 +1,13 @@
-import { 
-	Controller, 
-	Delete, 
-	Get, 
-	Inject, 
+import {
+	Controller,
+	Delete,
+	Get,
+	Inject,
 	Param,
 	ParseIntPipe,
 } from "@nestjs/common";
 import { Routes, ServerEvents, Services } from "src/utils/constants";
-import { AuthUser } from "src/utils/decoratiors";
+import { AuthUser } from "src/utils/decorators";
 import { User } from "src/utils/typeorm";
 import { IFriendsService } from "./friends";
 import { SkipThrottle } from "@nestjs/throttler";
@@ -20,7 +20,7 @@ export class FriendsController {
 		@Inject(Services.FRIENDS_SERVICE)
 		private readonly friendsService: IFriendsService,
 		private readonly event: EventEmitter2,
-	) {}
+	) { }
 
 	@Get()
 	getFriends(@AuthUser() user: User) {

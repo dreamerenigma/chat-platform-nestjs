@@ -1,15 +1,15 @@
-import { 
-	Body, 
-	Controller, 
-	Delete, 
-	Get, 
-	Inject, 
-	Param, 
-	ParseIntPipe, 
-	Patch, 
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Inject,
+	Param,
+	ParseIntPipe,
+	Patch,
 	Post,
 	UploadedFile,
-	UseInterceptors, 
+	UseInterceptors,
 } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -18,7 +18,7 @@ import { CreateMessageDto } from "src/messages/dtos/CreateMessage.dto";
 import { EditMessageDto } from "src/messages/dtos/EditMessage.dto";
 import { EmptyMessageException } from "src/messages/exceptions/EmptyMessage";
 import { Routes, Services } from "src/utils/constants";
-import { AuthUser } from "src/utils/decoratiors";
+import { AuthUser } from "src/utils/decorators";
 import { User } from "src/utils/typeorm";
 import { Attachment } from "src/utils/types";
 import { IGroupMessageService } from "../interfaces/group-messages";
@@ -26,10 +26,10 @@ import { IGroupMessageService } from "../interfaces/group-messages";
 @Controller(Routes.GROUP_MESSAGES)
 export class GroupMessageController {
 	constructor(
-		@Inject(Services.GROUP_MESSAGES) 
+		@Inject(Services.GROUP_MESSAGES)
 		private readonly groupMessageService: IGroupMessageService,
 		private readonly eventEmitter: EventEmitter2,
-	) {}
+	) { }
 
 	@Throttle(5, 10)
 	@UseInterceptors(
@@ -78,7 +78,7 @@ export class GroupMessageController {
 			groupId,
 			messageId,
 		});
-		this.eventEmitter.emit('group.message.delete', { 
+		this.eventEmitter.emit('group.message.delete', {
 			userId: user.id,
 			messageId,
 			groupId,

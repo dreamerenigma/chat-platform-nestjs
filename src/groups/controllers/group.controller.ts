@@ -9,7 +9,7 @@ import {
 } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Routes, Services } from "src/utils/constants";
-import { AuthUser } from "src/utils/decoratiors";
+import { AuthUser } from "src/utils/decorators";
 import { User } from "src/utils/typeorm";
 import { CreateGroupDto } from "../dtos/CreateGroup.dto";
 import { TransferOwnerDto } from "../dtos/TransferOwner.dto";
@@ -43,7 +43,7 @@ export class GroupController {
 	getGroup(@AuthUser() user: User, @Param('id') id: number) {
 		return this.groupService.findGroupById(id);
 	}
-	
+
 	@Patch(':id/owner')
 	async updateGroupOwner(
 		@AuthUser() { id: userId }: User,

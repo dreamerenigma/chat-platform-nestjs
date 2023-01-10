@@ -8,7 +8,7 @@ import {
 	Delete,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AuthUser } from 'src/utils/decoratiors';
+import { AuthUser } from 'src/utils/decorators';
 import { Routes, Services } from '../../utils/constants';
 import { User } from '../../utils/typeorm';
 import { AddGroupRecipientDto } from '../dtos/AddGroupRecipient.dto';
@@ -22,7 +22,7 @@ export class GroupRecipientsController {
 		@Inject(Services.GROUP_RECIPIENTS)
 		private readonly groupRecipientService: IGroupRecipientService,
 		private eventEmitter: EventEmitter2,
-	) {}
+	) { }
 
 	@Post()
 	async addGroupRecipient(
@@ -32,7 +32,7 @@ export class GroupRecipientsController {
 	) {
 		const params = { id, userId, username };
 		const response = await this.groupRecipientService.addGroupRecipient(params);
-		this.eventEmitter.emit('group.user.add', response );
+		this.eventEmitter.emit('group.user.add', response);
 		return response;
 	}
 
@@ -47,9 +47,9 @@ export class GroupRecipientsController {
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) groupId: number,
 	) {
-		const group = await this.groupRecipientService.leaveGroup({ 
-			id: groupId, 
-			userId: user.id, 
+		const group = await this.groupRecipientService.leaveGroup({
+			id: groupId,
+			userId: user.id,
 		});
 		this.eventEmitter.emit('group.user.leave', { group, userId: user.id });
 		return group;
