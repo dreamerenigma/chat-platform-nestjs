@@ -9,8 +9,14 @@ import { UserProfileService } from './services/user-profile.service';
 import { UserService } from './services/user.service';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([User, Profile]), ImageStorageModule],
-	controllers: [UsersController, UserProfilesController],
+	imports: [
+		TypeOrmModule.forFeature([User, Profile]), 
+		ImageStorageModule,
+	],
+	controllers: [
+		UsersController, 
+		UserProfilesController,
+	],
 	providers: [
 		{
 			provide: Services.USERS,

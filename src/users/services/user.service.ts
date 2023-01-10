@@ -14,7 +14,7 @@ import { IUserService } from '../interfaces/user';
 export class UserService implements IUserService {
 	constructor(
 		@InjectRepository(User) private readonly userRepository: Repository<User>,
-	) { }
+	) {}
 
 	async createUser(userDetails: CreateUserDetails) {
 		const exitingUser = await this.userRepository.findOne({
@@ -23,6 +23,7 @@ export class UserService implements IUserService {
 		if (exitingUser)
 			throw new HttpException('User already exists', HttpStatus.CONFLICT);
 		const password = await hashPassword(userDetails.password);
+		const params = { ...userDetails, password };
 		const newUser = this.userRepository.create({ ...userDetails, password });
 		return this.userRepository.save(newUser);
 	}
@@ -33,14 +34,15 @@ export class UserService implements IUserService {
 	): Promise<User> {
 		const selections: (keyof User)[] = [
 			'email',
+			'username',
 			'firstName',
 			'lastName',
 			'id',
-			'profile',
 		];
 		const selectionWithPassword: (keyof User)[] = [...selections, 'password'];
 		return this.userRepository.findOne(params, {
 			select: options?.selectAll ? selectionWithPassword : selections,
+			relations: ['profile'],
 		});
 	}
 
@@ -60,7 +62,7 @@ export class UserService implements IUserService {
 				'user.lastName',
 				'user.email',
 				'user.id',
-				'user-profile',
+				'user.profile',
 			])
 			.getMany();
 	}
