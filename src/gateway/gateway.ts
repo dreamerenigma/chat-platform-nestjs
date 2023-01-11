@@ -74,7 +74,7 @@ export class MessagingGateway
 		const group = await this.groupsService.findGroupById(
 			parseInt(data.groupId),
 		);
-		if (group) return;
+		if (!group) return;
 		const onlineUsers= [];
 		const offlineUsers = [];
 		group.users.forEach((user) => {
