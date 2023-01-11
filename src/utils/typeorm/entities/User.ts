@@ -45,7 +45,7 @@ export class User {
 	@JoinColumn()
 	profile: Profile;
 
-	@OneToOne(() => Profile, { cascade: ['insert', 'update'] })
+	@OneToOne(() => UserPresence, { cascade: ['insert', 'update'] })
 	@JoinColumn()
 	presence: UserPresence;
 }
