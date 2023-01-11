@@ -21,7 +21,9 @@ export class FriendsService implements IFriendsService {
 				'sender', 
 				'receiver',
 				'sender.profile',
+				'receiver.presence',
 				'receiver.profile',
+				'sender.presence',
 			],
 		});
 	}
@@ -31,6 +33,10 @@ export class FriendsService implements IFriendsService {
 			relations: [
 				'sender', 
 				'receiver',
+				'sender.profile',
+				'sender.presence',
+				'receiver.profile',
+				'receiver.presence',
 			],
 		});
 	}
