@@ -1,25 +1,26 @@
 import { Exclude } from 'class-transformer';
-import { 
-	Column, 
-	Entity, 
+import {
+	Column,
+	Entity,
 	JoinColumn,
-	ManyToMany, 
-	OneToMany, 
-	OneToOne, 
-	PrimaryGeneratedColumn, 
+	ManyToMany,
+	OneToMany,
+	OneToOne,
+	PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Group } from './Group';
 import { Message } from './Message';
 import { Profile } from './Profile';
+import { UserPresence } from './UserPresence';
 
 @Entity({ name: 'users' })
 export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
 
-	@Column({ unique: true  })
+	@Column({ unique: true })
 	username: string;
-	
+
 	@Column({ nullable: true })
 	email: string;
 
@@ -29,7 +30,7 @@ export class User {
 	@Column()
 	lastName: string;
 
-	@Column({ select: false})
+	@Column({ select: false })
 	@Exclude()
 	password: string;
 
@@ -43,4 +44,8 @@ export class User {
 	@OneToOne(() => Profile, { cascade: ['insert', 'update'] })
 	@JoinColumn()
 	profile: Profile;
+
+	@OneToOne(() => Profile, { cascade: ['insert', 'update'] })
+	@JoinColumn()
+	presence: UserPresence;
 }

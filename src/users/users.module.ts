@@ -7,10 +7,12 @@ import { UserProfilesController } from './controllers/user-profile.controller';
 import { UsersController } from './controllers/user.controller';
 import { UserProfileService } from './services/user-profile.service';
 import { UserService } from './services/user.service';
+import { UserPresenceService } from './services/users-presence.service';
+import { UserPresence } from '../utils/typeorm/entities/UserPresence';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([User, Profile]), 
+		TypeOrmModule.forFeature([User, UserPresence, Profile]), 
 		ImageStorageModule,
 	],
 	controllers: [
@@ -25,7 +27,11 @@ import { UserService } from './services/user.service';
 		{
 			provide: Services.USERS_PROFILES,
 			useClass: UserProfileService,
-		}
+		},
+		{
+			provide: Services.USER_PRESENCE,
+			useClass: UserPresenceService,
+		},
 	],
 	exports: [
 		{
@@ -35,6 +41,10 @@ import { UserService } from './services/user.service';
 		{
 			provide: Services.USERS_PROFILES,
 			useClass: UserProfileService,
+		},
+		{
+			provide: Services.USER_PRESENCE,
+			useClass: UserPresenceService,
 		},
 	],
 })

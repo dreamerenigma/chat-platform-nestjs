@@ -9,33 +9,36 @@ import { Friend } from "./entities/Friend";
 import { Profile } from "./entities/Profile";
 import { MessageAttachment } from "./entities/MessageAttachment";
 import { GroupMessageAttachment } from "./entities/GroupMessageAttachment";
+import { UserPresence } from "./entities/UserPresence";
 
 const entities = [
-	User, 
-	Session, 
-	Conversation, 
-	Message, 
-	Group, 
+	User,
+	Session,
+	Conversation,
+	Message,
+	Group,
 	GroupMessage,
 	FriendRequest,
 	Friend,
 	Profile,
 	MessageAttachment,
 	GroupMessageAttachment,
+	UserPresence,
 ];
 
 export default entities;
 
-export { 
-	User, 
-	Session, 
-	Conversation, 
-	Message, 
-	Group, 
+export {
+	User,
+	Session,
+	Conversation,
+	Message,
+	Group,
 	GroupMessage,
 	FriendRequest,
 	Friend,
 	Profile,
 	MessageAttachment,
 	GroupMessageAttachment,
+	UserPresence,
 };
