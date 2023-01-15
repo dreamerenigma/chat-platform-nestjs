@@ -5,4 +5,7 @@ import { User } from './User';
 export class Peer {
    @PrimaryGeneratedColumn('uuid')
    id: string;
+
+   @OneToOne(() => User, (user) => user.peer)
+   user: User;
 }
