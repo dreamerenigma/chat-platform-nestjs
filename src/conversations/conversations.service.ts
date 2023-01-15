@@ -37,7 +37,9 @@ export class ConversationsService implements IConversationsService {
 			.leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
 			.leftJoinAndSelect('conversation.creator', 'creator')
 			.leftJoinAndSelect('conversation.recipient', 'recipient')
-			.leftJoinAndSelect('creator.profile', 'creaytorProfile')
+			.leftJoinAndSelect('creator.peer', 'creatorPeer')
+			.leftJoinAndSelect('recipient.peer', 'recipientPeer')
+			.leftJoinAndSelect('creator.profile', 'creatorProfile')
 			.leftJoinAndSelect('recipient.profile', 'recipientProfile')
 			.where('creator.id = :id', { id })
 			.orWhere('recipient.id = :id', { id })
@@ -78,14 +80,28 @@ export class ConversationsService implements IConversationsService {
 		const recipient = await this.userService.findUser({ username });
 		if (!recipient) throw new UserNotFoundException();
 		if (creator.id === recipient.id) 
-			throw new CreateConversationException('Cannot create Conversation with yourself');
-		const isFriends = await this.friendsService.isFriends(creator.id, recipient.id);
+			throw new CreateConversationException(
+				'Cannot create Conversation with yourself'
+			);
+		const isFriends = await this.friendsService.isFriends(
+			creator.id, 
+			recipient.id,
+		);
 		if (!isFriends) throw new FriendNotFoundException();
 		const exist = await this.isCreated(creator.id, recipient.id);
 		if (exist) throw new ConversationExistsException();
-		const newConversation = this.conversationRepository.create({ creator, recipient });
-		const conversation = await this.conversationRepository.create(newConversation);
-		const NewMessage = this.messageRepository.create({ content, conversation, author: creator });
+		const newConversation = this.conversationRepository.create({ 
+			creator, 
+			recipient, 
+		});
+		const conversation = await this.conversationRepository.create(
+			newConversation
+		);
+		const NewMessage = this.messageRepository.create({ 
+			content, 
+			conversation, 
+			author: creator, 
+		});
 		await this.messageRepository.save(NewMessage);
 		return conversation;
 	}
