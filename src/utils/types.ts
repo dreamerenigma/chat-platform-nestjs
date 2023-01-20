@@ -240,7 +240,7 @@ export type  UpdateStatusMessageParams = {
 	statusMessage: string;
 };
 
-export type VideoCallHangupPayload = {
+export type CallHangUpPayload = {
 	receiver: User;
 	caller: User;
 };
@@ -253,3 +253,5 @@ export type VoiceCallPayload = {
 export type CallAcceptedPayload = {
 	caller: User;
 };
+
+
