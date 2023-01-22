@@ -145,6 +145,9 @@ export class MessagingGateway
 		@MessageBody() data: any,
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
+		console.log('onTypingStart');
+		console.log(data.conversationId);
+		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('onTypingStart');
 	}
 
@@ -153,11 +156,15 @@ export class MessagingGateway
 		@MessageBody() data: any,
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
+		console.log('onTypingStop');
+		console.log(data.conversationId);
+		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('onTypingStop');
 	}
 
 	@OnEvent('message.create')
 	handleMessageCreateEvent(payload: CreateMessageResponse) {
+		console.log('Inside message.create');
 		const { 
 			author, 
 			conversation: { creator, recipient },
@@ -175,12 +182,15 @@ export class MessagingGateway
 
 	@OnEvent('conversation.create')
 	handleConversationCreateEvent(payload: Conversation) {
+		console.log('Inside conversation.create');
 		const recipientSocket = this.sessions.getUserSocket(payload.recipient.id);
 		if (recipientSocket) recipientSocket.emit('onConversation', payload);
 	}
 
 	@OnEvent('message.delete')
 	async handleMessageDelete(payload) {
+		console.log('Inside message.delete');
+		console.log(payload);
 		const conversation = await this.conversationService.findById(
 			payload.conversationId,
 		);
@@ -199,6 +209,7 @@ export class MessagingGateway
 			author,
 			conversation: { creator, recipient },
 		} = message;
+		console.log(message);
 		const recipientSocket = 
 			author.id === creator.id
 				? this.sessions.getUserSocket(recipient.id)
@@ -209,6 +220,7 @@ export class MessagingGateway
 	@OnEvent('group.message.create')
 	async handleGroupMessageCreate(payload: CreateGroupMessageResponse) {
 		const { id } = payload.group;
+		console.log('Inside group.message.create');
 		this.server.to(`group-${id}`).emit('onGroupMessage', payload);
 	}
 
@@ -309,10 +321,6 @@ export class MessagingGateway
 			console.log('User is not online but there are no sockets in the room');
 			return leftUserSocket.emit('onGroupParticipantLeft', payload);
 		}
-		if (leftUserSocket && !socketsInRoom) {
-			console.log('User is online but there are no sockets in the room');
-			return leftUserSocket.emit('onGroupParticipantLeft', payload);
-		}
 	}
 	
 	@SubscribeMessage('getOnlineFriends')
@@ -404,14 +412,15 @@ export class MessagingGateway
 		const caller = socket.user;
 		const receiverSocket = this.sessions.getUserSocket(payload.recipientId);
 		if (!receiverSocket) socket.emit('onUserUnavailable');
-		receiverSocket.emit('onVideoCall', {  ...payload, caller });
+		receiverSocket.emit('onVoiceCall', {  ...payload, caller });
 	}
 
-	@SubscribeMessage('onVoiceCallAccepted')
+	@SubscribeMessage(WebsocketEvents.VOICE_CALL_ACCEPTED)
 	async handleVoiceCallAccepted(
 		@MessageBody() payload: CallAcceptedPayload,
 		@ConnectedSocket() socket: AuthenticatedSocket,
 	) {
+		console.log('Inside onVoiceCallAccepted event');
 		const callerSocket = this.sessions.getUserSocket(payload.caller.id);
 		const conversation = await this.conversationService.isCreated(
 			payload.caller.id,
@@ -427,7 +436,7 @@ export class MessagingGateway
 	}
 
 	@SubscribeMessage(WebsocketEvents.VOICE_CALL_HANG_UP)
-	async  handleVoiceCallHangUp(
+	async handleVoiceCallHangUp(
 		@MessageBody() { caller, receiver }: CallHangUpPayload,
 		@ConnectedSocket() socket: AuthenticatedSocket,
 	) {
@@ -442,7 +451,7 @@ export class MessagingGateway
 		}
 		socket.emit('onVideoCallHangUp');
 		const callerSocket = this.sessions.getUserSocket(caller.id);
-		callerSocket && callerSocket.emit('onVideoCallHangUp');
+		callerSocket && callerSocket.emit(WebsocketEvents.VOICE_CALL_HANG_UP);
 	}
 
 	@SubscribeMessage(WebsocketEvents.VOICE_CALL_REJECTED)

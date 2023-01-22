@@ -2,9 +2,8 @@ import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound'
 import { UserNotFoundException } from 'src/users/exceptions/UserNotFound';
 import { ConversationExistsException } from './exceptions/ConversationExists';
 import { CreateConversationException } from './exceptions/CreateConversation';
-import { CreateConversationDto } from 'src/auth/dtos/CreateConversation.dto';
 import { GetConversationMessagesParams, UpdateConversationParams } from './../utils/types';
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUserService } from 'src/users/interfaces/user';
 import { Services } from 'src/utils/constants';

@@ -28,7 +28,7 @@ export class MessageController {
 	constructor(
 		@Inject(Services.MESSAGES) private readonly messageService: IMessageService,
 		private eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	@Throttle(5, 10)
 	@UseInterceptors(
