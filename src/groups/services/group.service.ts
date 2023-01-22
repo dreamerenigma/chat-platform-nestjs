@@ -1,3 +1,4 @@
+import { generateUUIDV4 } from './../../utils/helpers';
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserNotFoundException } from "src/users/exceptions/UserNotFound";
@@ -9,11 +10,13 @@ import {
 	CreateGroupParams,
 	FetchGroupsParams,
 	TransferOwnerParams,
+	UpdateGroupDetailsParams,
 } from "src/utils/types";
 import { Repository } from "typeorm";
 import { GroupNotFoundException } from "../exceptions/GroupNotFound";
 import { GroupOwnerTransferException } from "../exceptions/GroupOwnerTransfer";
 import { IGroupService } from "../interfaces/group";
+import { IImageStorageService } from "src/image-storage/image-storage";
 
 @Injectable()
 export class GroupService implements IGroupService {
@@ -22,6 +25,8 @@ export class GroupService implements IGroupService {
 		private readonly groupRepository: Repository<Group>,
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
+		@Inject(Services.IMAGE_UPLOAD_SERVICE)
+		private readonly imageStorageService: IImageStorageService,
 	) { }
 
 	async createGroup(params: CreateGroupParams) {
@@ -53,9 +58,9 @@ export class GroupService implements IGroupService {
 		return this.groupRepository.findOne({
 			where: { id },
 			relations: [
-				'creator', 
-				'users', 
-				'lastMessageSent', 
+				'creator',
+				'users',
+				'lastMessageSent',
 				'owner',
 				'users.profile',
 			],
@@ -88,6 +93,18 @@ export class GroupService implements IGroupService {
 		const newOwner = await this.userService.findUser({ id: newOwnerId });
 		if (!newOwner) throw new UserNotFoundException();
 		group.owner = newOwner;
+		return this.groupRepository.save(group);
+	}
+
+	async updateDetails(params: UpdateGroupDetailsParams): Promise<Group> {
+		const group = await this.findGroupById(params.id);
+		if (!group) throw new GroupNotFoundException();
+		if (params.avatar) {
+			const key = generateUUIDV4();
+			await this.imageStorageService.upload({ key, file: params.avatar });
+			group.avatar = key;
+		}
+		group.title = params.title ?? group.title;
 		return this.groupRepository.save(group);
 	}
 }
