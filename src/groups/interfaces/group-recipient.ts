@@ -10,11 +10,11 @@ import {
 
 export interface IGroupRecipientService {
 	addGroupRecipient(
-		params: AddGroupRecipientParams
+		params: AddGroupRecipientParams,
 	): Promise<AddGroupUserResponse>;
 	removeGroupRecipient(
-		params: RemoveGroupRecipientParams
+		params: RemoveGroupRecipientParams,
 	): Promise<RemoveGroupUserResponse>;
 	leaveGroup(params: LeaveGroupParams);
-	isUserInGroup(params: CheckUserGroupParams): Promise<Group | undefined>;
+	isUserInGroup(params: CheckUserGroupParams): Promise<Group>;
 }

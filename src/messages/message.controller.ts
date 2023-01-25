@@ -8,7 +8,7 @@ import {
 	ParseIntPipe,
 	Patch,
 	Post,
-	UploadedFile,
+	UploadedFiles,
 	UseInterceptors,
 } from '@nestjs/common';
 import { Routes, Services } from 'src/utils/constants';
@@ -42,7 +42,7 @@ export class MessageController {
 	@Post()
 	async createMessage(
 		@AuthUser() user: User,
-		@UploadedFile() { attachments }: { attachments: Attachment[] },
+		@UploadedFiles() { attachments }: { attachments: Attachment[] },
 		@Param('id', ParseIntPipe) id: number,
 		@Body()
 		{ content }: CreateMessageDto,
@@ -65,7 +65,7 @@ export class MessageController {
 	}
 
 	@Delete(':messageId')
-	async deleteMessageFromnConversation(
+	async deleteMessageFromConversation(
 		@AuthUser() user: User,
 		@Param('id', ParseIntPipe) conversationId: number,
 		@Param('messageId', ParseIntPipe) messageId: number,

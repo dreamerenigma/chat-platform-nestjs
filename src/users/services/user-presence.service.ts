@@ -5,7 +5,7 @@ import { Services } from "../../utils/constants";
 import { User, UserPresence } from '../../utils/typeorm';
 import { UpdateStatusMessageParams } from '../../utils/types';
 import { IUserService } from "../interfaces/user";
-import { IUserPresenceService } from './../interfaces/user-presence';
+import { IUserPresenceService } from '../interfaces/user-presence';
 
 @Injectable()
 export class UserPresenceService implements IUserPresenceService {
@@ -19,7 +19,7 @@ export class UserPresenceService implements IUserPresenceService {
    createPresence(): Promise<UserPresence> {
       return this.userPresenceRepository.save(
          this.userPresenceRepository.create(),
-      )
+      );
    }
 
    async updateStatus({

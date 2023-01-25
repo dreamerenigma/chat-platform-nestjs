@@ -1,17 +1,17 @@
 import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { instanceToPlain } from "class-transformer";
-import { IGroupService } from "src/groups/interfaces/group";
-import { Services } from "src/utils/constants";
-import { Group, GroupMessage } from "src/utils/typeorm";
+import { Repository } from "typeorm";
+import { IGroupService } from "../interfaces/group";
+import { Services } from "../../utils/constants";
+import { Group, GroupMessage } from "../../utils/typeorm";
 import { 
 	CreateGroupMessageParams, 
 	DeleteGroupMessageParams, 
 	EditGroupMessageParams, 
 } from "src/utils/types";
-import { Repository } from "typeorm";
 import { IGroupMessageService } from "../interfaces/group-messages";
-import { IMessageAttachmentsService } from "src/message-attachments/message-attachments";
+import { IMessageAttachmentsService } from "../../message-attachments/message-attachments";
 
 @Injectable()
 export class GroupMessageService implements IGroupMessageService {
@@ -64,12 +64,13 @@ export class GroupMessageService implements IGroupMessageService {
 	}
 
 	async deleteGroupMessage(params: DeleteGroupMessageParams) {
+		console.log(params);
 		const group = await this.groupRepository
 			.createQueryBuilder('group')
 			.where('group.id = :groupId', { groupId: params.groupId })
 			.leftJoinAndSelect('group.lastMessageSent', 'lastMessageSent')
 			.leftJoinAndSelect('group.messages', 'messages')
-			.orderBy('messages.createAt', 'DESC')
+			.orderBy('messages.createdAt', 'DESC')
 			.limit(5)
 			.getOne();
 
@@ -82,8 +83,7 @@ export class GroupMessageService implements IGroupMessageService {
 		});
 
 		if (!message)
-			throw new HttpException('Cannot dalete message',
-				HttpStatus.BAD_REQUEST);
+			throw new HttpException('Cannot delete message', HttpStatus.BAD_REQUEST);
 
 		if (group.lastMessageSent.id !== message.id)
 			return this.groupMessageRepository.delete({ id: message.id });
@@ -113,12 +113,8 @@ export class GroupMessageService implements IGroupMessageService {
 			where: {
 				id: params.messageId,
 				author: { id: params.userId },
-			}, relations: [
-				'group',
-				'group.creator',
-				'group.recipient',
-				'author',
-			],
+			}, 
+			relations: ['group', 'group.creator', 'group.recipient', 'author'],
 		});
 		if (!messageDB)
 			throw new HttpException('Cannot Edit Message', HttpStatus.BAD_REQUEST);

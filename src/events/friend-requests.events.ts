@@ -39,7 +39,7 @@ export class FriendRequestsEvents {
 
 	@OnEvent(ServerEvents.FRIEND_REQUEST_REJECTED)
 	handleFriendRequestRejected(payload: FriendRequest) {
-		console.log(ServerEvents.FRIEND_REQUEST_ACCEPTED);
+		console.log(ServerEvents.FRIEND_REQUEST_REJECTED);
 		const senderSocket = this.gateway.sessions.getUserSocket(payload.sender.id);
 		senderSocket && 
 			senderSocket.emit(WebsocketEvents.FRIEND_REQUEST_REJECTED, payload);

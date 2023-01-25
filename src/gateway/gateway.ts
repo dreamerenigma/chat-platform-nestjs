@@ -11,6 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { IConversationsService } from 'src/conversations/conversations';
+import { IFriendsService } from 'src/friends/friends';
 import { IGroupService } from '../groups/interfaces/group';
 import { Services, WebsocketEvents } from 'src/utils/constants';
 import { AuthenticatedSocket } from 'src/utils/interfaces';
@@ -30,9 +31,8 @@ import {
 	RemoveGroupUserResponse,
 	VoiceCallPayload,
 } from 'src/utils/types';
-import { IFriendsService } from 'src/friends/friends';
-import { IGatewaySessionManager } from './gateway.session';
 import { CreateCallDto } from './dtos/CreateCallDto';
+import { IGatewaySessionManager } from './gateway.session';
 
 @WebSocketGateway({
 	cors: {
@@ -113,7 +113,7 @@ export class MessagingGateway
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
 		console.log('onConversationLeave');
-		client.join(`conversation-${data.conversationId}`);
+		client.leave(`conversation-${data.conversationId}`);
 		console.log(client.rooms);
 		client.to(`conversation-${data.conversationId}`).emit('userLeave');
 	}
@@ -135,7 +135,7 @@ export class MessagingGateway
 		@ConnectedSocket() client: AuthenticatedSocket,
 	) {
 		console.log('onGroupLeave');
-		client.join(`group-${data.groupId}`);
+		client.leave(`group-${data.groupId}`);
 		console.log(client.rooms);
 		client.to(`group-${data.groupId}`).emit('userGroupLeave');
 	}
@@ -259,8 +259,8 @@ export class MessagingGateway
 		console.log(payload);
 		console.log('Inside group.user.remove');
 		if (removedUserSocket) {
-			console.log('Emitting onGroupRemove');
-			removedUserSocket.emit('onGroupRemove', payload);
+			console.log('Emitting onGroupRemoved');
+			removedUserSocket.emit('onGroupRemoved', payload);
 			removedUserSocket.leave(ROOM_NAME);
 		}
 		this.server.to(ROOM_NAME).emit('onGroupRecipientRemoved', payload);
@@ -284,7 +284,7 @@ export class MessagingGateway
 		// Check if the new owneer is in the group (room)
 		this.server.to(ROOM_NAME).emit('onGroupOwnerUpdate', payload);
 		if (newOwnerSocket && !socketsInRoom.has(newOwnerSocket.id)) {
-			console.log('The new owneer is not in the room...');
+			console.log('The new owner is not in the room...');
 			newOwnerSocket.emit('onGroupOwnerUpdate', payload);
 		}
 	}
@@ -303,7 +303,7 @@ export class MessagingGateway
 		 */
 		console.log(socketsInRoom);
 		console.log(leftUserSocket);
-		if (leftUserSocket && !socketsInRoom) {
+		if (leftUserSocket && socketsInRoom) {
 			console.log('user is online, at latest 1 person is in the room');
 			if (socketsInRoom.has(leftUserSocket.id)) {
 				console.log('User is in room... room set has socket id');
@@ -317,7 +317,7 @@ export class MessagingGateway
 				return;
 			}
 		}
-		if (!leftUserSocket && !socketsInRoom) {
+		if (leftUserSocket && !socketsInRoom) {
 			console.log('User is not online but there are no sockets in the room');
 			return leftUserSocket.emit('onGroupParticipantLeft', payload);
 		}
@@ -368,7 +368,7 @@ export class MessagingGateway
 		);
 		if (!conversation) return console.log('No conversation found');
 		if (callerSocket) {
-			console.log('Emmiting onVideoCallAccept event');
+			console.log('Emitting onVideoCallAccept event');
 			const payload = { ...data, conversation, acceptor: socket.user };
 			callerSocket.emit('onVideoCallAccept', payload);
 			socket.emit('onVideoCallAccept', payload);
@@ -428,7 +428,7 @@ export class MessagingGateway
 		);
 		if (!conversation) return console.log('No conversation found');
 		if (callerSocket) {
-			console.log('Emmiting onVoiceCallAccept event');
+			console.log('Emitting onVoiceCallAccept event');
 			const callPayload = { ...payload, conversation, acceptor: socket.user };
 			callerSocket.emit(WebsocketEvents.VOICE_CALL_ACCEPTED, callPayload);
 			socket.emit(WebsocketEvents.VOICE_CALL_ACCEPTED, callPayload);
@@ -449,7 +449,7 @@ export class MessagingGateway
 				receiverSocket.emit(WebsocketEvents.VOICE_CALL_HANG_UP)
 			);
 		}
-		socket.emit('onVideoCallHangUp');
+		socket.emit(WebsocketEvents.VOICE_CALL_HANG_UP);
 		const callerSocket = this.sessions.getUserSocket(caller.id);
 		callerSocket && callerSocket.emit(WebsocketEvents.VOICE_CALL_HANG_UP);
 	}

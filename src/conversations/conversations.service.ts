@@ -1,21 +1,22 @@
-import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound';
-import { UserNotFoundException } from 'src/users/exceptions/UserNotFound';
-import { ConversationExistsException } from './exceptions/ConversationExists';
-import { CreateConversationException } from './exceptions/CreateConversation';
-import { GetConversationMessagesParams, UpdateConversationParams } from './../utils/types';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound';
+import { IFriendsService } from '../friends/friends';
+import { UserNotFoundException } from 'src/users/exceptions/UserNotFound';
 import { IUserService } from 'src/users/interfaces/user';
 import { Services } from 'src/utils/constants';
 import { Conversation, Message, User } from 'src/utils/typeorm';
 import {
 	AccessParams,
 	CreateConversationParams,
+	GetConversationMessagesParams,
+	UpdateConversationParams,
 } from 'src/utils/types';
-import { Repository } from 'typeorm';
 import { IConversationsService } from './conversations';
+import { ConversationExistsException } from './exceptions/ConversationExists';
 import { ConversationNotFoundException } from './exceptions/ConversationNotFound';
-import { IFriendsService } from '../friends/friends';
+import { CreateConversationException } from './exceptions/CreateConversation';
 
 @Injectable()
 export class ConversationsService implements IConversationsService {
@@ -87,21 +88,21 @@ export class ConversationsService implements IConversationsService {
 			recipient.id,
 		);
 		if (!isFriends) throw new FriendNotFoundException();
-		const exist = await this.isCreated(creator.id, recipient.id);
-		if (exist) throw new ConversationExistsException();
+		const exists = await this.isCreated(creator.id, recipient.id);
+		if (exists) throw new ConversationExistsException();
 		const newConversation = this.conversationRepository.create({ 
 			creator, 
 			recipient, 
 		});
-		const conversation = await this.conversationRepository.create(
+		const conversation = await this.conversationRepository.save(
 			newConversation
 		);
-		const NewMessage = this.messageRepository.create({ 
+		const newMessage = this.messageRepository.create({ 
 			content, 
 			conversation, 
 			author: creator, 
 		});
-		await this.messageRepository.save(NewMessage);
+		await this.messageRepository.save(newMessage);
 		return conversation;
 	}
 
@@ -124,10 +125,10 @@ export class ConversationsService implements IConversationsService {
 		return this.conversationRepository
 			.createQueryBuilder('conversation')
 			.where('id = :id', { id })
-			.leftJoinAndSelect('conversation.lastMessagesent', 'lastMessageSent')
+			.leftJoinAndSelect('conversation.lastMessageSent', 'lastMessageSent')
 			.leftJoinAndSelect('conversation.messages', 'message')
 			.where('conversation.id = :id', { id })
-			.orderBy('message.createAt', 'DESC')
+			.orderBy('message.createdAt', 'DESC')
 			.limit(limit)
 			.getOne();
 	}

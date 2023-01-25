@@ -1,22 +1,23 @@
-import { generateUUIDV4 } from './../../utils/helpers';
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { IImageStorageService } from "src/image-storage/image-storage";
 import { UserNotFoundException } from "src/users/exceptions/UserNotFound";
 import { IUserService } from "src/users/interfaces/user";
 import { Services } from "src/utils/constants";
+import { generateUUIDV4 } from './../../utils/helpers';
 import { Group, User } from "src/utils/typeorm";
 import {
 	AccessParams,
+	Attachment,
 	CreateGroupParams,
 	FetchGroupsParams,
 	TransferOwnerParams,
 	UpdateGroupDetailsParams,
 } from "src/utils/types";
-import { Repository } from "typeorm";
 import { GroupNotFoundException } from "../exceptions/GroupNotFound";
 import { GroupOwnerTransferException } from "../exceptions/GroupOwnerTransfer";
 import { IGroupService } from "../interfaces/group";
-import { IImageStorageService } from "src/image-storage/image-storage";
 
 @Injectable()
 export class GroupService implements IGroupService {
@@ -27,7 +28,7 @@ export class GroupService implements IGroupService {
 		private readonly userService: IUserService,
 		@Inject(Services.IMAGE_UPLOAD_SERVICE)
 		private readonly imageStorageService: IImageStorageService,
-	) { }
+	) {}
 
 	async createGroup(params: CreateGroupParams) {
 		const { creator, title } = params;
@@ -65,6 +66,7 @@ export class GroupService implements IGroupService {
 				'lastMessageSent',
 				'owner',
 				'users.profile',
+				'users.presence',
 			],
 		});
 	}
@@ -87,7 +89,7 @@ export class GroupService implements IGroupService {
 		const group = await this.findGroupById(groupId);
 		if (!group) throw new GroupNotFoundException();
 		if (group.owner.id !== userId)
-			throw new GroupOwnerTransferException('Insufficient Permisions');
+			throw new GroupOwnerTransferException('Insufficient Permissions');
 		if (group.owner.id === newOwnerId)
 			throw new GroupOwnerTransferException(
 				'Cannot Transfer Owner to yourself',
