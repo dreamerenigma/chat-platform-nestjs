@@ -7,14 +7,14 @@ import {
 	Post,
 	UseGuards,
 } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { SkipThrottle } from '@nestjs/throttler';
 import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from 'src/utils/constants';
 import { AuthUser } from 'src/utils/decorators';
 import { User } from 'src/utils/typeorm';
 import { IConversationsService } from './conversations';
-import { CreateConversationDto } from 'src/auth/dtos/CreateConversation.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { SkipThrottle } from '@nestjs/throttler';
+import { CreateConversationDto } from './dtos/CreateConversation.dto';
 
 @SkipThrottle()
 @Controller(Routes.CONVERSATIONS)
@@ -24,7 +24,7 @@ export class ConversationsController {
 		@Inject(Services.CONVERSATIONS)
 		private readonly conversationsService: IConversationsService,
 		private readonly events: EventEmitter2,
-	) { }
+	) {}
 	@Get('test/endpoint/check')
 	test() {
 		return;

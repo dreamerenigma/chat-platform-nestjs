@@ -8,7 +8,6 @@ import {
 } from "src/utils/types";
 
 export interface IGroupService {
-	transferGroupOwner(params: { userId: number; groupId: number; newOwnerId: number; }): unknown;
 	createGroup(params: CreateGroupParams);
 	getGroups(params: FetchGroupsParams): Promise<Group[]>;
 	findGroupById(id: number): Promise<Group>;

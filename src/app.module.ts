@@ -8,7 +8,7 @@ import { ConversationsModule } from './conversations/conversations.module';
 import { MessagesModule } from './messages/messages.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import entities, { FriendRequest } from './utils/typeorm';
+import entities from './utils/typeorm';
 import { GroupModule } from './groups/group.module';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';

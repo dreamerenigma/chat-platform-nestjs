@@ -27,7 +27,7 @@ async function bootstrap() {
 			resave: false,
 			name: 'CHAT_APP_SESSION_ID',
 			cookie: { 
-				maxAge: 86400000, // cookie express 1 day later
+				maxAge: 86400000, // cookie expires 1 day later
 			},
 			store: new TypeormStore().connect(sessionRepository),
 		}),

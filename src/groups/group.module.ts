@@ -1,6 +1,7 @@
-import { MiddlewareConsumer, NestModule } from "@nestjs/common";
-import { Module } from "@nestjs/common/decorators";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ImageStorageModule } from "src/image-storage/image-storage.module";
+import { MessageAttachmentsModule } from "src/message-attachments/message-attachments.module";
 import { UsersModule } from "src/users/users.module";
 import { Services } from "src/utils/constants";
 import { isAuthorized } from "src/utils/helpers";
@@ -12,8 +13,6 @@ import { GroupMiddleware } from "./middlewares/group.middleware";
 import { GroupMessageService } from "./services/group-messages.service";
 import { GroupRecipientService } from "./services/group-recipient.service";
 import { GroupService } from "./services/group.service";
-import { ImageStorageModule } from "src/image-storage/image-storage.module";
-import { MessageAttachmentsModule } from "src/message-attachments/message-attachments.module";
 
 @Module({
 	imports: [

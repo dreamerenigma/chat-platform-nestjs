@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { FriendRequestsEvents } from "./friend-requests.events";
 import { GatewayModule } from 'src/gateway/gateway.module';
+import { FriendRequestsEvents } from "./friend-requests.events";
 import { FriendEvents } from './friends.events';
 
 @Module({

@@ -6,12 +6,12 @@ import {
 	Param,
 	ParseIntPipe,
 } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
+import { SkipThrottle } from "@nestjs/throttler";
 import { Routes, ServerEvents, Services } from "src/utils/constants";
 import { AuthUser } from "src/utils/decorators";
 import { User } from "src/utils/typeorm";
 import { IFriendsService } from "./friends";
-import { SkipThrottle } from "@nestjs/throttler";
-import { EventEmitter2 } from "@nestjs/event-emitter";
 
 @SkipThrottle()
 @Controller(Routes.FRIENDS)
@@ -20,7 +20,7 @@ export class FriendsController {
 		@Inject(Services.FRIENDS_SERVICE)
 		private readonly friendsService: IFriendsService,
 		private readonly event: EventEmitter2,
-	) { }
+	) {}
 
 	@Get()
 	getFriends(@AuthUser() user: User) {

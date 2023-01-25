@@ -1,4 +1,4 @@
-import { Group, GroupMessage } from "src/utils/typeorm";
+import { GroupMessage } from "src/utils/typeorm";
 import { 
 	CreateGroupMessageParams, 
 	DeleteGroupMessageParams, 

@@ -1,9 +1,9 @@
-import { MessageAttachmentsService } from './message-attachments.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
-import { GroupMessageAttachment, MessageAttachment } from 'src/utils/typeorm';
-import { Services } from 'src/utils/constants';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageStorageModule } from 'src/image-storage/image-storage.module';
+import { Services } from 'src/utils/constants';
+import { GroupMessageAttachment, MessageAttachment } from 'src/utils/typeorm';
+import { MessageAttachmentsService } from './message-attachments.service';
 
 @Module({
    imports: [

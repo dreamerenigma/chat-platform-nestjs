@@ -22,7 +22,7 @@ export class ExistsController {
 		@Inject(Services.USERS)
 		private readonly userService: IUserService,
 		private readonly events: EventEmitter2,
-	) { }
+	) {}
 
 	@Get('conversations/:recipientId')
 	async checkConversationExists(

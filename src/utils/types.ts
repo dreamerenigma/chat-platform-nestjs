@@ -1,10 +1,10 @@
-import { GroupMessageAttachment } from './typeorm/entities/GroupMessageAttachment';
 import { 
 	Conversation, 
 	Friend,
 	FriendRequest,
 	Group, 
 	GroupMessage, 
+	GroupMessageAttachment,
 	Message, 
 	MessageAttachment, 
 	User,

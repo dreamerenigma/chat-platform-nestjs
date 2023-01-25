@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockUser } from '../../__mocks__';
 import { Services } from '../../utils/constants';
-import { FriendRequestController } from "../friend-requests.controller";
+import { mockUser } from '../../__mocks__';
 import { IFriendRequestService } from '../friend-requests';
+import { FriendRequestController } from "../friend-requests.controller";
 
 describe('FriendRequestController', () => {
 	let controller: FriendRequestController;

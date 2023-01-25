@@ -1,10 +1,10 @@
-import { AuthenticatedGuard } from 'src/auth/utils/Guards';
-import { IUserPresenceService } from './../../../dist/chat-app-nestjs/src/users/interfaces/user-presence.d';
 import { Body, Controller, Inject, Patch, UseGuards } from "@nestjs/common";
-import { AuthUser } from "../../utils/decorators";
+import { AuthenticatedGuard } from 'src/auth/utils/Guards';
 import { Routes, Services } from "../../utils/constants";
+import { AuthUser } from "../../utils/decorators";
 import { User } from "../../utils/typeorm";
 import { UpdatePresenceStatusDto } from "../dtos/UpdatePresenceStatus.dto";
+import { IUserPresenceService } from '../interfaces/user-presence';
 
 @UseGuards(AuthenticatedGuard)
 @Controller(Routes.USER_PRESENCE)

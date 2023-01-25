@@ -8,8 +8,8 @@ import {
 	ParseIntPipe,
 	Patch,
 	Post,
-	UploadedFile,
 	UseInterceptors,
+	UploadedFile,
 } from "@nestjs/common";
 import { EventEmitter2 } from "@nestjs/event-emitter";
 import { FileFieldsInterceptor } from "@nestjs/platform-express";
@@ -29,7 +29,7 @@ export class GroupMessageController {
 		@Inject(Services.GROUP_MESSAGES)
 		private readonly groupMessageService: IGroupMessageService,
 		private readonly eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	@Throttle(5, 10)
 	@UseInterceptors(

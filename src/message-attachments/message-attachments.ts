@@ -1,5 +1,5 @@
-import { Attachment } from "src/utils/types";
 import { GroupMessageAttachment, MessageAttachment } from "src/utils/typeorm";
+import { Attachment } from "src/utils/types";
 
 export interface IMessageAttachmentsService {
    create(attachments: Attachment[]): Promise<MessageAttachment[]>;

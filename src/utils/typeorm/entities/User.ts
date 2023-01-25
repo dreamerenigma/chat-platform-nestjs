@@ -10,9 +10,9 @@ import {
 } from 'typeorm';
 import { Group } from './Group';
 import { Message } from './Message';
+import { Peer } from './Peer';
 import { Profile } from './Profile';
 import { UserPresence } from './UserPresence';
-import { Peer } from './Peer';
 
 @Entity({ name: 'users' })
 export class User {

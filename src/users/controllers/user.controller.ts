@@ -7,14 +7,14 @@ import {
 	Query,
 } from "@nestjs/common";
 import { Routes, Services } from "src/utils/constants";
-import { IUserService } from "../interfaces/user";
 import { UserAlreadyExists } from '../exceptions/UserAlreadyExists';
+import { IUserService } from "../interfaces/user";
 
 @Controller(Routes.USERS)
 export class UsersController {
 	constructor(
 		@Inject(Services.USERS) private readonly userService: IUserService,
-	) { }
+	) {}
 
 	@Get('search')
 	searchUsers(@Query('query') query: string) {

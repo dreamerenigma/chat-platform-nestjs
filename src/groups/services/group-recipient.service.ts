@@ -1,12 +1,15 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { IUserService } from 'src/users/interfaces/user';
+import { Services } from '../../utils/constants';
+import { Group } from '../../utils/typeorm';
 import {
 	AddGroupRecipientParams,
 	CheckUserGroupParams,
 	LeaveGroupParams,
 	RemoveGroupRecipientParams,
 } from 'src/utils/types';
-import { Services } from '../../utils/constants';
 import { GroupNotFoundException } from '../exceptions/GroupNotFound';
 import { GroupParticipantNotFound } from '../exceptions/GroupParticipantNotFound';
 import { NotGroupOwnerException } from '../exceptions/NotGroupOwner';
@@ -18,18 +21,18 @@ export class GroupRecipientService implements IGroupRecipientService {
 	constructor(
 		@Inject(Services.USERS) private userService: IUserService,
 		@Inject(Services.GROUPS) private groupService: IGroupService,
-	) { }
+	) {}
 
 	async addGroupRecipient(params: AddGroupRecipientParams) {
 		const group = await this.groupService.findGroupById(params.id);
 		if (!group) throw new GroupNotFoundException();
 		if (group.owner.id !== params.userId)
-			throw new HttpException('Insuffcient PErmissions', HttpStatus.FORBIDDEN);
-		const recipient = await this.userService.findUser({ username: params.username });
+			throw new HttpException('Insufficient Permissions', HttpStatus.FORBIDDEN);
+		const recipient = await this.userService.findUser({ 
+			username: params.username, 
+		});
 		if (!recipient)
 			throw new HttpException('Cannot Add User', HttpStatus.BAD_REQUEST);
-		if (group.creator.id !== params.userId)
-			throw new HttpException('Insufficient Permissions', HttpStatus.FORBIDDEN);
 		const inGroup = group.users.find((user) => user.id === recipient.id);
 		if (inGroup)
 			throw new HttpException('User already in group', HttpStatus.BAD_REQUEST);
@@ -46,7 +49,9 @@ export class GroupRecipientService implements IGroupRecipientService {
 	 */
 	async removeGroupRecipient(params: RemoveGroupRecipientParams) {
 		const { issuerId, removeUserId, id } = params;
-		const userToBeRemoved = await this.userService.findUser({ id: removeUserId });
+		const userToBeRemoved = await this.userService.findUser({ 
+			id: removeUserId, 
+		});
 		if (!userToBeRemoved)
 			throw new HttpException('User cannnot be removed', HttpStatus.BAD_REQUEST)
 		const group = await this.groupService.findGroupById(id);
@@ -73,17 +78,16 @@ export class GroupRecipientService implements IGroupRecipientService {
 	}
 
 	async leaveGroup({ id, userId }: LeaveGroupParams) {
-		const group = await this.groupService.findGroupById(id);
-		const updatedUsers = group.users.filter((user) => user.id !== userId);
+		const group = await this.isUserInGroup({ id, userId });
 		console.log(`Updating Groups`);
 		if (group.owner.id === userId)
 			throw new HttpException(
 				'Cannot leave group as owner',
 				HttpStatus.BAD_REQUEST,
 			);
-		console.log('New USers in Group agter leaving...');
+		console.log('New Users in Group after leaving...');
 		console.log(group.users.filter((user) => user.id !== userId));
-		group.users = group.users.filter((user) => user.id !== userId)
+		group.users = group.users.filter((user) => user.id !== userId);
 		return this.groupService.saveGroup(group);
 	}
 }

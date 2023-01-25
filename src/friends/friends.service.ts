@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Friend } from "src/utils/typeorm";
 import { Repository } from "typeorm";
-import { IFriendsService } from "./friends";
+import { Friend } from "src/utils/typeorm";
 import { DeleteFriendRequestParams } from "src/utils/types";
-import { FriendNotFoundException } from "./exceptions/FriendNotFound";
 import { DeleteFriendException } from "./exceptions/DeleteFriend";
+import { FriendNotFoundException } from "./exceptions/FriendNotFound";
+import { IFriendsService } from "./friends";
 
 @Injectable()
 export class FriendsService implements IFriendsService {
@@ -21,8 +21,8 @@ export class FriendsService implements IFriendsService {
 				'sender', 
 				'receiver',
 				'sender.profile',
-				'receiver.presence',
 				'receiver.profile',
+				'receiver.presence',
 				'sender.presence',
 			],
 		});

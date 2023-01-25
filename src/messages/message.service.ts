@@ -1,23 +1,23 @@
-import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound';
-import { CannotDeleteMessage } from './exceptions/CannotDeleteMessage';
-import { ConversationNotFoundException } from './../conversations/exceptions/ConversationNotFound';
-import { Services } from 'src/utils/constants';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { Conversation, Message, User } from 'src/utils/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { instanceToPlain } from 'class-transformer';
+import { Repository } from 'typeorm';
+import { IConversationsService } from 'src/conversations/conversations';
+import { ConversationNotFoundException } from './../conversations/exceptions/ConversationNotFound';
+import { FriendNotFoundException } from './../friends/exceptions/FriendNotFound';
+import { IFriendsService } from '../friends/friends';
+import { IMessageAttachmentsService } from 'src/message-attachments/message-attachments';
+import { buildFindMessageParams } from 'src/utils/builder';
+import { Services } from 'src/utils/constants';
+import { Conversation, Message } from 'src/utils/typeorm';
 import {
 	CreateMessageParams,
 	DeleteMessageParams,
 	EditMessageParams,
 } from 'src/utils/types';
-import { Repository } from 'typeorm';
-import { IMessageService } from './message';
-import { IMessageAttachmentsService } from 'src/message-attachments/message-attachments';
-import { IConversationsService } from 'src/conversations/conversations';
 import { CannotCreateMessageException } from './exceptions/CannotCreateMessage';
-import { buildFindMessageParams } from 'src/utils/builder';
-import { InjectRepository } from '@nestjs/typeorm';
-import { instanceToPlain } from 'class-transformer';
-import { IFriendsService } from '../friends/friends';
+import { CannotDeleteMessage } from './exceptions/CannotDeleteMessage';
+import { IMessageService } from './message';
 
 @Injectable()
 export class MessageService implements IMessageService {

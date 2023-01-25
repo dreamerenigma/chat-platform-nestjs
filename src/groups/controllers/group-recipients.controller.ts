@@ -8,12 +8,12 @@ import {
 	Delete,
 } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { AuthUser } from 'src/utils/decorators';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Routes, Services } from '../../utils/constants';
+import { AuthUser } from 'src/utils/decorators';
 import { User } from '../../utils/typeorm';
 import { AddGroupRecipientDto } from '../dtos/AddGroupRecipient.dto';
 import { IGroupRecipientService } from '../interfaces/group-recipient';
-import { SkipThrottle } from '@nestjs/throttler';
 
 @SkipThrottle()
 @Controller(Routes.GROUP_RECIPIENTS)
@@ -22,7 +22,7 @@ export class GroupRecipientsController {
 		@Inject(Services.GROUP_RECIPIENTS)
 		private readonly groupRecipientService: IGroupRecipientService,
 		private eventEmitter: EventEmitter2,
-	) { }
+	) {}
 
 	@Post()
 	async addGroupRecipient(

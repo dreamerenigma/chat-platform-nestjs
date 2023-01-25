@@ -6,7 +6,7 @@ import {
 	OneToOne, 
 	PrimaryGeneratedColumn, 
 } from "typeorm";
-import { FriendRequestStatus } from "src/utils/types";
+import { FriendRequestStatus } from "../../types";
 import { User } from "./User";
 
 @Entity({ name: 'friend_requests' })

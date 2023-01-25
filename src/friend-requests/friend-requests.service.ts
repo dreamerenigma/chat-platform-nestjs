@@ -1,5 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { FriendAlreadyExists } from "src/friends/exceptions/FriendAlreadyExists";
+import { IFriendsService } from "src/friends/friends";
 import { UserNotFoundException } from "../users/exceptions/UserNotFound";
 import { IUserService } from "../users/interfaces/user";
 import { Services } from "../utils/constants";
@@ -10,14 +13,11 @@ import {
 	CreateFriendParams,
 	FriendRequestParams,
 } from "src/utils/types";
-import { Repository } from "typeorm";
 import { FriendRequestException } from "./exceptions/FriendRequest";
 import { FriendRequestAcceptedException } from "./exceptions/FriendRequestAccepted";
 import { FriendRequestNotFoundException } from "./exceptions/FriendRequestNotFound";
 import { FriendRequestPending } from "./exceptions/FriendRequestPending";
 import { IFriendRequestService } from './friend-requests';
-import { IFriendsService } from "src/friends/friends";
-import { FriendAlreadyExists } from "src/friends/exceptions/FriendAlreadyExists";
 
 @Injectable()
 export class FriendRequestService implements IFriendRequestService {
@@ -30,7 +30,7 @@ export class FriendRequestService implements IFriendRequestService {
 		private readonly userService: IUserService,
 		@Inject(Services.FRIENDS_SERVICE)
 		private readonly friendsService: IFriendsService,
-	) { }
+	) {}
 
 	getFriendRequests(id: number): Promise<FriendRequest[]> {
 		const status = 'pending';
@@ -48,7 +48,7 @@ export class FriendRequestService implements IFriendRequestService {
 		if (!friendRequest) throw new FriendRequestNotFoundException();
 		if (friendRequest.sender.id !== userId) throw new FriendRequestException();
 		await this.friendRequestRepository.delete(id);
-		return friendRequest;;
+		return friendRequest;
 	}
 
 	async create({ user: sender, username }: CreateFriendParams) {
@@ -79,7 +79,9 @@ export class FriendRequestService implements IFriendRequestService {
 		if (friendRequest.receiver.id !== userId)
 			throw new FriendRequestException();
 		friendRequest.status = 'accepted';
-		const updateFriendRequest = await this.friendRequestRepository.save(friendRequest);
+		const updateFriendRequest = await this.friendRequestRepository.save(
+			friendRequest,
+		);
 		const newFriend = this.friendRepository.create({
 			sender: friendRequest.sender,
 			receiver: friendRequest.receiver,
